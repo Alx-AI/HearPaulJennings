@@ -27,6 +27,7 @@ OneDrive_1_2-27-2026/
 # Reference images
 *.jpg
 *.png
+!frontend/idle-poster.jpg
 
 # Lock file
 uv.lock

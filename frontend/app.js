@@ -16,9 +16,13 @@ let isRecording = false;
 // State machine: idle → recording → processing → playing → walkoff → idle
 let state = "idle";
 let expectedVideo = null; // track which video we're waiting on
+let videoGeneration = 0; // increments each playVideo call to ignore stale events
+let currentGeneration = 0; // set when video actually starts playing
+let lastResponseWasFallback = false; // walkoff only after fallback/inappropriate
 
 const INTRO_VIDEO = "/videos/Extra Videos/Intro.mp4";
 const WALKOFF_VIDEO = "/videos/Extra Videos/Jennings Walks Off (1).mp4";
+const IDLE_POSTER = "idle-poster.jpg";
 
 // Preloader — hidden video element to buffer upcoming videos
 const preloader = document.createElement("video");
@@ -33,22 +37,32 @@ function preloadVideo(url) {
   preloader.load();
 }
 
+// ─── Idle State ───
+
+function showIdle() {
+  player.pause();
+  player.removeAttribute("src");
+  player.load();
+  player.poster = IDLE_POSTER;
+  captionOverlay.classList.add("hidden");
+  setState("idle");
+}
+
 // ─── Initialization ───
 
 async function init() {
   player.preload = "auto";
-  setState("idle");
 
   // Pre-buffer walkoff video
   preloadVideo(WALKOFF_VIDEO);
 
-  // Try autoplay — browsers may block it if audio is enabled
-  playVideo(INTRO_VIDEO).then((played) => {
-    if (!played) {
-      // Autoplay blocked — show tap-to-start overlay
-      showTapToStart();
-    }
-  });
+  // Play intro once, then go to idle poster
+  setState("intro");
+  const played = await playVideo(INTRO_VIDEO);
+  if (!played) {
+    // Autoplay blocked — show tap-to-start overlay
+    showTapToStart();
+  }
 }
 
 // Overlay for when autoplay is blocked by browser policy
@@ -63,6 +77,7 @@ function showTapToStart() {
     () => {
       overlay.remove();
       player.muted = false;
+      setState("intro");
       playVideo(INTRO_VIDEO);
     },
     { once: true }
@@ -94,9 +109,17 @@ function setState(newState) {
 
 function playVideo(url, caption) {
   return new Promise((resolve) => {
+    const gen = ++videoGeneration;
     expectedVideo = url;
     player.src = url;
     player.load();
+
+    // Mark this generation as active once actually playing
+    player.addEventListener(
+      "playing",
+      () => { currentGeneration = gen; },
+      { once: true }
+    );
 
     // Wait for enough data buffered before playing
     player.addEventListener(
@@ -125,19 +148,23 @@ function playVideo(url, caption) {
 }
 
 player.addEventListener("ended", () => {
-  // Ignore spurious ended events from src changes
-  if (!player.src.includes(expectedVideo)) return;
+  // Ignore ended events from videos that never actually played
+  if (currentGeneration !== videoGeneration) return;
 
-  if (state === "playing") {
-    // Play walk-off, then return to idle
+  if (state === "intro") {
+    // Intro finished — show idle poster
+    showIdle();
+  } else if (state === "playing" && lastResponseWasFallback) {
+    // Inappropriate/unmatched question — play walkoff dismissal
     setState("walkoff");
     captionOverlay.classList.add("hidden");
     playVideo(WALKOFF_VIDEO);
+  } else if (state === "playing") {
+    // Normal answer finished — return to idle poster
+    showIdle();
   } else if (state === "walkoff") {
-    setState("idle");
-    playVideo(INTRO_VIDEO);
-    // Pre-buffer walkoff for next round
-    preloadVideo(WALKOFF_VIDEO);
+    // Walkoff finished — return to idle poster
+    showIdle();
   }
 });
 
@@ -232,6 +259,7 @@ function handleResponse(data) {
   showStatus(`You said: "${data.transcription}" — ${info}`);
 
   if (data.video_url) {
+    lastResponseWasFallback = data.is_fallback;
     setState("playing");
     playVideo(data.video_url, data.answer);
   } else {
