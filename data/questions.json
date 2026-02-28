@@ -1,0 +1,553 @@
+[
+  {
+    "id": 1,
+    "row": 2,
+    "question": "What was your family like?",
+    "answers": {
+      "B": "I was raised by my mother, an enslaved woman. My father was a white man named Benjamin Jennings. I married Fanny, and though we were often apart, we had five children together. Three of my sons later fought for the Union during the Civil War. (Script 0)",
+      "C": "I was born to my mother, an enslaved woman, and my father, Benjamin Jennings, who was white. I later married Fanny, and though slavery kept us apart at times, we had five children. Three of my sons fought for the Union in the Civil War. (Script 23)",
+      "D": "My mother was enslaved, and my father was a white man, Benjamin Jennings. I married Fanny, and together we had five children, even though separation was often forced on us. Three of my boys went on to fight for the Union. (Script 51)"
+    },
+    "videos": {
+      "B": "Column B/B2.mp4",
+      "C": "Column C/C2.mp4",
+      "D": "Column D/D2.mp4"
+    }
+  },
+  {
+    "id": 2,
+    "row": 3,
+    "question": "Was it hard being separated from your family?",
+    "answers": {
+      "B": "It was very hard. Even though we were married for 22 years, I never spent more than a weekend at a time with my wife. (Script 46)",
+      "C": "Yes, it was very hard. Fanny and I were married 22 years, yet slavery meant I never spent more than a weekend with her at a time. (Script 57)",
+      "D": "It was painful. Though Fanny and I were husband and wife for 22 years, we were only allowed short visits, never more than a weekend. (Script 43)"
+    },
+    "videos": {
+      "B": "Column B/B3.mp4",
+      "C": "Column C/C3.mp4",
+      "D": "Column D/D3.mp4"
+    },
+    "notes": "D3, when Paul says \"visits\" his mouth does something super weird; Jake - trying to regenerate"
+  },
+  {
+    "id": 3,
+    "row": 4,
+    "question": "How did you learn how to read and write?",
+    "answers": {
+      "B": "I was expected to help Mr. Madison with daily tasks, so I was taught to read, write, and do basic math. Most enslaved people weren't given that chance. (Script 6)",
+      "C": "I learned because I was needed for Mr. Madison’s work. He had me taught to read, write, and do figures. Most enslaved people were denied such learning. (Script 13)",
+      "D": "I was taught to read, write, and do simple math so I could help Mr. Madison with his duties. Few enslaved people were allowed that chance. (Script 54)"
+    },
+    "videos": {
+      "B": "Column B/B4.mp4",
+      "C": "Column C/C4.mp4",
+      "D": "Column D/D4.mp4"
+    }
+  },
+  {
+    "id": 4,
+    "row": 5,
+    "question": "Did you ever think about escaping or helping others to escape?",
+    "answers": {
+      "B": "Of course. I won't say exactly what I did, but I prayed for freedom every day and helped when I could, quietly. (Script 2)",
+      "C": "Yes. I won’t go into detail, but I prayed for freedom and gave what help I could without drawing notice. (Script 56)",
+      "D": "I did not speak of it openly, but I hoped for freedom every day and helped when I could, in quiet ways. (Script 36)"
+    },
+    "videos": {
+      "B": "Column B/B5.mp4",
+      "C": "Column C/C5 (1).mp4",
+      "D": "Column D/D5.mp4"
+    }
+  },
+  {
+    "id": 5,
+    "row": 6,
+    "question": "How did enslaved people fight back in their daily lives?",
+    "answers": {
+      "B": "We broke tools, faked illness, slowed work, kept traditions, gathered in secret, and learned to read and write. These were quiet ways to assert our humanity. (Script 70)",
+      "C": "We found ways to resist - damaging equipment, feigning sickness, working slowly, preserving our customs, meeting in secret, and pursuing education. These subtle acts preserved our dignity. (Script 35)",
+      "D": "We found ways to resist each day. Breaking tools, feigning sickness, or working slowly gave us small power. We also kept our traditions, met in secret, and learned to read and write. (Script 60)"
+    },
+    "videos": {
+      "B": "Column B/B6.mp4",
+      "C": "Column C/C6 (1).mp4",
+      "D": "Column D/D6.mp4"
+    }
+  },
+  {
+    "id": 6,
+    "row": 7,
+    "question": "Did you ever get to do anything you actually enjoyed?",
+    "answers": {
+      "B": "Yes, I played the violin. When peace was declared after the War of 1812, I played \"The President's March.\" Music was something I could carry with me, even in hard times. (Script 19)",
+      "C": "Yes. I played the violin. After the War of 1812, I even performed “The President’s March” when peace was declared. Music gave me comfort through difficult times. (Script 59)",
+      "D": "I did. I played the violin, and when peace came at the end of the War of 1812, I played “The President’s March.” Music was something I could hold on to. (Script 53)"
+    },
+    "videos": {
+      "B": "Column B/B7.mp4",
+      "C": "Column C/C7.mp4",
+      "D": "Column D/D7.mp4"
+    }
+  },
+  {
+    "id": 7,
+    "row": 8,
+    "question": "Did you ever overhear important political conversations while you were working?",
+    "answers": {
+      "B": "I did. Working so close to President Madison, I often caught bits of talk about politics and war. I was but a boy, quiet, but my ears were open. I learned early that the words spoken in those halls shaped the fate of the nation. (Script 55)",
+      "C": "Yes. Serving near President Madison, I sometimes overheard talk of politics and war. I was young and silent, but I listened. Those words carried weight for the whole country. (Script 12)",
+      "D": "I did. Close to the President, I caught fragments of conversations about government and conflict. I stayed quiet, but I knew those discussions shaped our nation’s course. (Script 52)"
+    },
+    "videos": {
+      "B": "Column B/B8.mp4",
+      "C": "Column C/C8 (1).mp4",
+      "D": "Column D/D8.mp4"
+    }
+  },
+  {
+    "id": 8,
+    "row": 9,
+    "question": "What was it like living with and working for James and Dolley Madison?",
+    "answers": {
+      "B": "Life on the plantation was hard. We had no control over our lives, no matter what others said about the Madisons. I can say I never knew President Madison to strike an enslaved person or to allow an overseer to do it — but that did not change the fact that we remained in bondage. (Script 38)",
+      "C": "It was a hard life, with no say in how we lived. Some described the Madisons as “kind,” yet we were still enslaved. I never saw President Madison strike a slave, nor did he allow overseers to do so, but slavery itself was dehumanizing. (Script 61)",
+      "D": "Plantation life meant constant labor and no freedom. Even if people called the Madisons “kind,” we had no power over our own lives. I can say Mr. Madison never struck us or permitted overseers to do it, yet that fact could not make slavery less cruel. (Script 50)"
+    },
+    "videos": {
+      "B": "Column B/B9.mp4",
+      "C": "Column C/C9 (1).mp4",
+      "D": "Column D/D9.mp4"
+    }
+  },
+  {
+    "id": 9,
+    "row": 10,
+    "question": "What kinds of jobs did you do for President Madison?",
+    "answers": {
+      "B": "From age 10 onward, I was his body servant. I helped him dress, delivered messages, served guests, and prepared rooms, even during the British invasion. I saw how power worked. (Script 15)",
+      "C": "From the age of 10, I served as President Madison’s body servant. I dressed him, carried his messages, served his guests, and readied his rooms—even during the British invasion. In those moments, I saw power up close. (Script 3)",
+      "D": "I began serving Mr. Madison when I was 10. My duties included helping him dress, delivering messages, waiting on visitors, and preparing his rooms. I did this work even as the British invaded, and I saw how power moved through those halls. (Script 18)"
+    },
+    "videos": {
+      "B": "Column B/B10.mp4",
+      "C": "Column C/C10.mp4",
+      "D": "Column D/D10.mp4"
+    }
+  },
+  {
+    "id": 10,
+    "row": 11,
+    "question": "What was it like to live in the White House?",
+    "answers": {
+      "B": "I moved to the White House when I was 10 years old. The White House wasn't grand back then. But I served dignitaries like Thomas Jefferson and D.C.'s first mayor, Robert Brent, at Mrs. Madison's gatherings. (Script 5)",
+      "C": "I was only 10 when I entered the White House. It was not the grand place you might imagine. Still, I served important guests there, like Thomas Jefferson and the city’s first mayor, Robert Brent. (Script 69)",
+      "D": "I moved into the White House as a boy of 10. At that time, it wasn’t the stately building people think of today. I waited on figures such as Thomas Jefferson and Robert Brent, D.C.'s first mayor, at Mrs. Madison’s gatherings. (Script 25)"
+    },
+    "videos": {
+      "B": "Column B/B11.mp4",
+      "C": "Column C/C11.mp4",
+      "D": "Column D/D11.mp4"
+    }
+  },
+  {
+    "id": 11,
+    "row": 12,
+    "question": "What do you remember about the British burning the White House?",
+    "answers": {
+      "B": "I was just 15 years old then. At first, it seemed like a normal day. \"Mrs. Madison ordered dinner ready at 3, as usual.\" But when the British came, she fled with valuables. She ordered Washington's portrait to be saved, but she didn't cut it out herself, no matter what the papers later claimed. (Script 68)",
+      "C": "I was 15 when the British came. The day began as any other—Mrs. Madison even ordered dinner at 3, as usual. But she soon fled with valuables, and the famous portrait of Washington was saved, though she did not cut it out herself as some later claimed. (Script 62)",
+      "D": "I was only 15 years old then. At first it felt like an ordinary day, with dinner ordered at 3 o’clock. But when the British drew near, Mrs. Madison gathered valuables and left. The portrait of Washington was saved, though she did not cut it from the frame herself. (Script 47)"
+    },
+    "videos": {
+      "B": "Column B/B12.mp4",
+      "C": "Column C/C12.mp4",
+      "D": "Column D/D12.mp4"
+    }
+  },
+  {
+    "id": 12,
+    "row": 13,
+    "question": "Where did you live in this building?",
+    "answers": {
+      "B": "I lived in the basement, in the servants' quarters alongside storage rooms. It wasn't spacious, and there wasn't much light, but that's where those of us who served Mrs. Madison lived and worked. (Script 20)",
+      "C": "I lived in the basement, in the servants’ quarters near the storage rooms. It was cramped and dark, but that is where those of us serving Mrs. Madison stayed. (Script 31)",
+      "D": "My home was in the basement, alongside storerooms. The space was small and had little light, but that’s where the servants lived and worked. (Script 22)"
+    },
+    "videos": {
+      "B": "Column B/B13.mp4",
+      "C": "Column C/C13.mp4",
+      "D": "Column D/D13.mp4"
+    }
+  },
+  {
+    "id": 13,
+    "row": 14,
+    "question": "What was it like working for Mrs. Madison after President Madison passed away?",
+    "answers": {
+      "B": "After Mr. Madison died, Mrs. Madison brought me with her to Washington. I continued in service, running errands, helping with household matters, and often being loaned out to others. But those were difficult years. Her finances were poor, and despite all I had done for their family, she sold me in 1847 to pay a debt. I had served her for decades. That's how slavery was. No matter how loyal you were, your life was never your own. (Script 32)",
+      "C": "After Mr. Madison’s death, Mrs. Madison took me with her to Washington. I kept on running errands, tending to household matters, and was even loaned to others. Times were hard, and in 1847 she sold me to cover a debt. I had given decades of service, but in slavery, loyalty never secured freedom. (Script 8)",
+      "D": "When President Madison passed, I went with Mrs. Madison to Washington. I still carried messages, helped with her household, and was sent out to work for others. Her finances were failing, and in 1847 she sold me to pay what she owed. That was slavery: no matter your service, your life was not your own. (Script 65)"
+    },
+    "videos": {
+      "B": "Column B/B14.mp4",
+      "C": "Column C/C14.mp4",
+      "D": "Column D/D14.mp4"
+    }
+  },
+  {
+    "id": 14,
+    "row": 15,
+    "question": "How did you manage to get your freedom in 1847?",
+    "answers": {
+      "B": "Mrs. Madison sold me in 1847 to settle a debt. Daniel Webster later bought me and let me repay him in monthly installments. I was about 48 years old when I was freed. It came at a high cost, but it was worth every cent. (Script 41)",
+      "C": "In 1847, Mrs. Madison sold me to pay a debt. Daniel Webster then purchased me, and I repaid him month by month until my freedom was secured. I was about 48 years old. It cost dearly, but freedom was worth it. (Script 16)",
+      "D": "I was sold in 1847 when Mrs. Madison needed money for her debts. Daniel Webster bought me, and I earned my freedom by paying him back in small installments. I was near 48 years old, and though it came at a heavy price, it was worth it. (Script 1, 4, 7, 10, 11, 14, 17, 21, 28, 29, 30, 42, 45, 58, 63, 64, 71)"
+    },
+    "videos": {
+      "B": "Column B/B15.mp4",
+      "C": "Column C/C15.mp4",
+      "D": "Column D/D15.mp4"
+    }
+  },
+  {
+    "id": 15,
+    "row": 16,
+    "question": "What was your life like after you were freed?",
+    "answers": {
+      "B": "I worked at the Pension Office and bought a house in D.C., where I lived with my third wife, Amelia. My daughter and grandsons lived next door. Life was still hard, but in freedom, even burdens feel lighter. (Script 66)",
+      "C": "After freedom, I found work at the Pension Office. I bought a home in Washington, living there with my wife Amelia. My daughter and grandsons were right next door. Life was not easy, but in freedom even hard days felt lighter. (Script 37)",
+      "D": "Once I was freed, I worked for the Pension Office. I purchased a house in Washington, where I lived with my wife Amelia, while my daughter and grandsons lived beside us. Times were still difficult, but freedom made the weight easier to bear. (Script 39)"
+    },
+    "videos": {
+      "B": "Column B/B16.mp4",
+      "C": "Column C/C16.mp4",
+      "D": "Column D/D16.mp4"
+    }
+  },
+  {
+    "id": 16,
+    "row": 17,
+    "question": "Where did you live after you were freed?",
+    "answers": {
+      "B": "I bought two homes on L Street in northwest D.C.--one for myself and my family, and one for my daughter and grandchildren. (Script 26)",
+      "C": "After freedom, I bought two houses on L Street in northwest Washington. One I lived in with my family, and the other was for my daughter and her children. (Script 34)",
+      "D": "I made my home on L Street in northwest D.C. I purchased two houses there—one for myself and Amelia, and one for my daughter and her sons. (Script 49)"
+    },
+    "videos": {
+      "B": "Column B/B17.mp4",
+      "C": "Column C/C17.mp4",
+      "D": "Column D/D17.mp4"
+    }
+  },
+  {
+    "id": 17,
+    "row": 18,
+    "question": "Did you remarry?",
+    "answers": {
+      "B": "Yes. After Fanny died, I married Desdemona Brooks in 1849 and later Amelia Dorsey. I spent my final years with Amelia.",
+      "C": "Yes. After Fanny passed away, I married Desdemona Brooks in 1849. Later, I wed Amelia Dorsey, with whom I spent my last years. (Script 44)",
+      "D": "I did. Following Fanny’s death, I married Desdemona Brooks in 1849, and in time I married Amelia Dorsey. Amelia was my wife in my later years. (Script 24)"
+    },
+    "videos": {
+      "B": "Column B/B18.mp4",
+      "C": "Column C/C18.mp4",
+      "D": "Column D/D18.mp4"
+    }
+  },
+  {
+    "id": 18,
+    "row": 19,
+    "question": "What made you want to help those people escape on the Pearl?",
+    "answers": {
+      "B": "Because freedom is a right. I used what I had to help those planning to rescue their loved ones. (Script 40)",
+      "C": "Because every person deserves freedom. I gave what help I could to those trying to free their families. (Script 67)",
+      "D": "Freedom is a right, not a gift. I used what I had to support the effort of those who sought to rescue their loved ones. (Script 48)"
+    },
+    "videos": {
+      "B": "Column B/B19.mp4",
+      "C": "Column C/C19.mp4",
+      "D": "Column D/D19.mp4"
+    }
+  },
+  {
+    "id": 19,
+    "row": 20,
+    "question": "What was the plan for the Pearl escape?",
+    "answers": {
+      "B": "The plan was to help 77 enslaved people escape from Washington by ship, sailing up the Potomac River toward freedom. (Script 27)",
+      "C": "The plan was to take 77 enslaved people from Washington aboard a ship and sail up the Potomac River toward freedom. (Script 33)",
+      "D": "Seventy-seven enslaved men, women, and children were to escape by boat, leaving Washington and heading north on the Potomac. (Script 9)"
+    },
+    "videos": {
+      "B": "Column B/B20.mp4",
+      "C": "Column C/C20.mp4",
+      "D": "Column D/D20.mp4"
+    }
+  },
+  {
+    "id": 20,
+    "row": 21,
+    "question": "What went wrong with the Pearl escape?",
+    "answers": {
+      "B": "The wind turned against us, and the ship got stuck. Word got out before they could get far. A posse caught up with them, and they were all taken back.",
+      "C": "The winds shifted, and the ship was slowed. News spread before they got far, and a posse overtook them. Everyone was brought back.",
+      "D": "The escape failed when the wind turned. The schooner stalled, word reached others, and a group caught them before they could get away."
+    },
+    "videos": {
+      "B": "Column B/B21.mp4",
+      "C": "Column C/C21.mp4",
+      "D": "Column D/D21.mp4"
+    }
+  },
+  {
+    "id": 21,
+    "row": 22,
+    "question": "What happened to the people who were caught during the Pearl escape?",
+    "answers": {
+      "B": "They were captured. Some were freed with help from local abolitionists, but many were sold to the Deep South. It opened many eyes to the cruelty of slavery.",
+      "C": "They were taken back. With help from abolitionists, some regained freedom, but many were sold into the Deep South. The event showed many the harsh reality of slavery.",
+      "D": "All were captured. A few were rescued through abolitionist efforts, yet many were sent south to be sold. The escape made the cruelty of slavery harder to ignore."
+    },
+    "videos": {
+      "B": "Column B/B22.mp4",
+      "C": "Column C/C22.mp4",
+      "D": "Column D/D22.mp4"
+    }
+  },
+  {
+    "id": 22,
+    "row": 23,
+    "question": "Were you scared of getting caught helping people escape?",
+    "answers": {
+      "B": "The risk was always there. Helping others could mean punishment, or worse, for me and for them. Anyone in that position had to move carefully. Still, some risks were worth it.",
+      "C": "Yes, the danger was real. Helping others could bring harsh punishment, even death, for me and for them. We had to act with care, but some chances were worth taking.",
+      "D": "Of course there was fear. If caught, the cost could be terrible—for me and for those I tried to help. Still, freedom was worth the risk."
+    },
+    "videos": {
+      "B": "Column B/B23.mp4",
+      "C": "Column C/C23.mp4",
+      "D": "Column D/D23.mp4"
+    }
+  },
+  {
+    "id": 23,
+    "row": 24,
+    "question": "Why do you think people were willing to risk so much on the Pearl?",
+    "answers": {
+      "B": "It shows how deep our hope was. 77 people risked everything. We weren't waiting to be freed. We were fighting for it.",
+      "C": "It shows the strength of our hope. Seventy-seven people chose to risk everything. We did not wait for freedom to come—we reached for it ourselves.",
+      "D": "Because freedom was worth any danger. Seventy-seven men, women, and children put their lives on the line. That was not waiting to be freed, but fighting for it."
+    },
+    "videos": {
+      "B": "Column B/B24.mp4",
+      "C": "Column C/C24.mp4",
+      "D": "Column D/D24.mp4"
+    }
+  },
+  {
+    "id": 24,
+    "row": 25,
+    "question": "How did you feel about the Civil War when it began?",
+    "answers": {
+      "B": "I felt hope and fear. Three of my sons fought for the Union. I was proud, but afraid for them. I hoped it would bring real change.",
+      "C": "I felt both hope and fear. Three of my sons joined the Union army. I was proud of them, yet I feared for their lives, and I prayed the war would bring lasting change.",
+      "D": "My feelings were mixed. I had three sons in Union uniforms. I was proud of their courage, but fearful of what could happen. I hoped the war might finally break slavery."
+    },
+    "videos": {
+      "B": "Column B/B25.mp4",
+      "C": "Column C/C25.mp4",
+      "D": "Column D/D25.mp4"
+    }
+  },
+  {
+    "id": 25,
+    "row": 26,
+    "question": "What happened to your children?",
+    "answers": {
+      "B": "Fanny and I had five children. Three of my sons fought for the Union. Later, I reunited with my surviving children in Washington. Like many families, we had been divided by slavery.",
+      "C": "Fanny and I raised five children. Three of my sons wore Union blue during the war. In time, I reunited with those who survived, though slavery had divided us.",
+      "D": "We had five children. Three of my sons fought for the Union cause. Later, I was able to see my surviving children again in Washington, after years of separation under slavery."
+    },
+    "videos": {
+      "B": "Column B/B26.mp4",
+      "C": "Column C/C26.mp4",
+      "D": "Column D/D26.mp4"
+    }
+  },
+  {
+    "id": 26,
+    "row": 27,
+    "question": "Did you see things get better for Black people during your life?",
+    "answers": {
+      "B": "Some. My children were born in bondage, but they lived to see freedom. That was no small thing. But racism didn't end with slavery. We had to keep pushing, and we still do.",
+      "C": "I saw some change. My children were born enslaved, yet they lived to see freedom. That mattered greatly. But slavery’s end did not end racism. The struggle had to go on.",
+      "D": "There was progress, yes. My own children began life in bondage but lived to walk free. Still, prejudice and injustice remained, so the fight was not finished."
+    },
+    "videos": {
+      "B": "Column B/B27.mp4",
+      "C": "Column C/C27.mp4",
+      "D": "Column D/D27.mp4"
+    }
+  },
+  {
+    "id": 27,
+    "row": 28,
+    "question": "What was life like for you as a free Black man in Washington?",
+    "answers": {
+      "B": "I could earn money and own property, but I couldn't vote, and many doors were still closed. Freedom didn't mean equality.",
+      "C": "I could work for wages and buy a home, but I had no vote. Freedom gave me more, yet equality was still denied.",
+      "D": "As a free man I could earn money and own land, but rights were still withheld. Freedom did not make me equal."
+    },
+    "videos": {
+      "B": "Column B/B28.mp4",
+      "C": "Column C/C28.mp4",
+      "D": "Column D/D28.mp4"
+    }
+  },
+  {
+    "id": 28,
+    "row": 29,
+    "question": "What do you think people today can learn from your story?",
+    "answers": {
+      "B": "That enslaved people resisted. We endured, adapted, and fought back in countless ways. Even enslavers who seemed \"kind\" upheld a system that dehumanized us.",
+      "C": "That enslaved people never accepted slavery in silence. We resisted, we survived, and we found ways to fight back. Even those called “kind” still held others in bondage.",
+      "D": "People today should know that we endured and resisted. We adapted, we pushed back in large and small ways. No enslaver, however “kind,” was innocent of the system."
+    },
+    "videos": {
+      "B": "Column B/B29.mp4",
+      "C": "Column C/C29.mp4",
+      "D": "Column D/D29.mp4"
+    }
+  },
+  {
+    "id": 29,
+    "row": 30,
+    "question": "What do you want students to understand most about your life?",
+    "answers": {
+      "B": "That I wasn't just a servant. I was a son, husband, father, and community member. Like many others, I persevered, whether history remembers us or not.",
+      "C": "I want them to see that I was more than a servant. I was a son, a husband, a father, and part of a community. I endured, as so many did, whether remembered or not.",
+      "D": "That my life cannot be reduced to service alone. I had a family, I belonged to a community, and I persevered through bondage and freedom."
+    },
+    "videos": {
+      "B": "Column B/B30.mp4",
+      "C": "Column C/C30.mp4",
+      "D": "Column D/D30.mp4"
+    }
+  },
+  {
+    "id": 30,
+    "row": 31,
+    "question": "Why did you keep helping other people even after you were free?",
+    "answers": {
+      "B": "I remembered those still in chains--friends, neighbors, family. Helping them was how I honored those who helped me.",
+      "C": "I thought of those still enslaved—my friends, my neighbors, my kin. By helping them, I honored the help I had once received.",
+      "D": "Because I knew too many still in bondage. I could not forget them. Helping was my way of repaying what others had done for me."
+    },
+    "videos": {
+      "B": "Column B/B31.mp4",
+      "C": "Column C/C31.mp4",
+      "D": "Column D/D31.mp4"
+    }
+  },
+  {
+    "id": 31,
+    "row": 32,
+    "question": "Looking back on your life, what were some of your proudest accomplishments?",
+    "answers": {
+      "B": "I kept my dignity. I earned my freedom. My sons fought for what was right. I told the truth and tried to help others understand our struggle.",
+      "C": "I held on to my dignity. I worked for my freedom. My sons took up arms for the Union. And I spoke the truth so others would know our struggle.",
+      "D": "That I never lost my dignity. That I gained my freedom through my own labor. That my sons fought on the right side of the war. And that I told our story plainly."
+    },
+    "videos": {
+      "B": "Column B/B32.mp4",
+      "C": "Column C/C32.mp4",
+      "D": "Column D/D32.mp4"
+    }
+  },
+  {
+    "id": 32,
+    "row": 33,
+    "question": "What does freedom mean to you?",
+    "answers": {
+      "B": "It's more than not being owned. It's dignity. It's being seen as a full person. It's having a chance to build a life without fear.",
+      "C": "Freedom is more than the absence of chains. It is dignity, it is being recognized as a person, and it is the chance to live without fear.",
+      "D": "To me, freedom meant more than no longer being owned. It meant dignity, respect, and the ability to build a life in safety."
+    },
+    "videos": {
+      "B": "Column B/B33.mp4",
+      "C": "Column C/C33.mp4",
+      "D": "Column D/D33.mp4"
+    }
+  },
+  {
+    "id": 33,
+    "row": 34,
+    "question": "How do you want to be remembered?",
+    "answers": {
+      "B": "As a man who told the truth. Who helped where he could. Who lived through injustice and still chose dignity.",
+      "C": "As someone who spoke honestly, lent a hand where he could, and held on to dignity despite injustice.",
+      "D": "As a man who did not hide the truth, who offered help when he was able, and who lived with dignity in the face of slavery."
+    },
+    "videos": {
+      "B": "Column B/B34.mp4",
+      "C": "Column C/C34.mp4",
+      "D": "Column D/D34.mp4"
+    }
+  },
+  {
+    "id": 34,
+    "row": 35,
+    "question": "What advice do you have for the people of this generation?",
+    "answers": {
+      "B": "Never take your freedom for granted. Keep learning, stand up for justice, and believe that change is possible. That's how progress happens.",
+      "C": "Do not take freedom for granted. Keep learning, keep speaking for justice, and keep believing in change. That is how progress is made.",
+      "D": "Remember that freedom is precious. Stand for justice, seek knowledge, and trust that change can come. That is the path to progress."
+    },
+    "videos": {
+      "B": "Column B/B35.mp4",
+      "C": "Column C/C35.mp4",
+      "D": "Column D/D35.mp4"
+    }
+  },
+  {
+    "id": 35,
+    "row": 36,
+    "question": "Did you write down your story?",
+    "answers": {
+      "B": "Yes. With the help of a friend, I published my memories of working for President Madison and living through the War of 1812. I wanted people to know what really happened.",
+      "C": "Yes. With a friend’s help, I published my recollections of serving President Madison and seeing the War of 1812. I wanted the truth remembered.",
+      "D": "I did. I wrote my memories with the aid of a friend, telling of my years with President Madison and the war. I hoped people would know what truly happened."
+    },
+    "videos": {
+      "B": "Column B/B36.mp4",
+      "C": "Column C/C36.mp4",
+      "D": "Column D/D36.mp4"
+    }
+  },
+  {
+    "id": 36,
+    "row": 37,
+    "question": "Response if unable to answer.",
+    "answers": {
+      "B": "I don’t know the answer to that. Try asking me something else.",
+      "C": "I don’t know much about that. But if you’re curious how my life began—or what it meant to be born into slavery—I can tell you more.",
+      "D": "That’s not something I can answer. But I do remember my years serving the Madisons, both in the White House and after.",
+      "E": "I’m not sure about that. But I can speak to how I gained my freedom—and the people who helped make it possible.",
+      "F": "I can’t help with that one. But if you want to hear about resistance or the escape attempt known as the Pearl, I can share what I know.",
+      "G": "That’s outside my knowledge. But I lived through the Civil War here in Washington—there’s much to say about those years.",
+      "H": "That’s a question for someone else. But if you’d like to hear how I look back on my life, I can speak from experience."
+    },
+    "videos": {
+      "B": "Column B/B37.mp4",
+      "C": "Column C/C37.mp4",
+      "D": "Column D/D37.mp4",
+      "E": "Extra Videos/E37.mp4",
+      "F": "Extra Videos/F37.mp4",
+      "G": "Extra Videos/G37.mp4",
+      "H": "Extra Videos/H37.mp4"
+    },
+    "notes": "I’m not sure about that. But I can speak to how I gained my freedom—and the people who helped make it possible.",
+    "is_fallback": true
+  }
+]

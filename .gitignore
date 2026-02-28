@@ -1,0 +1,32 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Environment
+.env
+
+# OS
+.DS_Store
+
+# Generated data
+data/embeddings.npy
+
+# Video files (large, stored separately)
+OneDrive_1_2-27-2026/
+
+# Spreadsheet source
+*.xlsx
+
+# Reference images
+*.jpg
+*.png
+
+# Lock file
+uv.lock

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hear Paul Jennings</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <div id="video-container">
+      <video id="player" playsinline preload="auto"></video>
+      <div id="caption-overlay" class="hidden"></div>
+    </div>
+
+    <div id="controls">
+      <button id="ask-btn" aria-label="Ask a question">
+        <svg id="mic-icon" viewBox="0 0 24 24" width="32" height="32" fill="currentColor">
+          <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+          <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+        </svg>
+        <span id="btn-label">Ask a Question</span>
+      </button>
+      <div id="recording-indicator" class="hidden">
+        <div class="pulse-ring"></div>
+        <span>Listening...</span>
+      </div>
+      <div id="processing-indicator" class="hidden">
+        <div class="spinner"></div>
+        <span>Thinking...</span>
+      </div>
+    </div>
+
+    <div id="status-bar" class="hidden">
+      <p id="status-text"></p>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
