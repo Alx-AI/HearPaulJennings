@@ -38,7 +38,7 @@ The video files (~285 MB) are hosted on Google Drive and are not included in the
 
 **Google Drive link**: https://drive.google.com/drive/folders/1vEoHtODolBr4oZ8Ctcz02nCnU5CAVqof?usp=sharing
 
-### Option A: Download with gdown (recommended)
+### Option A: Download with gdown
 
 ```bash
 pip install gdown
@@ -47,9 +47,9 @@ pip install gdown
 gdown --folder "https://drive.google.com/drive/folders/1vEoHtODolBr4oZ8Ctcz02nCnU5CAVqof" -O /root/HearPaulJennings/OneDrive_1_2-27-2026
 ```
 
-### Option B: Upload from your local machine
+**Note**: gdown may only download a partial set of files if Google rate-limits. Check the counts below and use Option B for any missing files.
 
-If gdown doesn't work (Google sometimes blocks automated downloads), upload from your local machine:
+### Option B: Upload from your local machine (most reliable)
 
 ```bash
 # From your LOCAL machine (not the Vast instance):
@@ -91,7 +91,7 @@ pip3 install fastapi uvicorn python-multipart httpx sentence-transformers numpy 
 ```
 
 This installs:
-- **FastAPI + uvicorn**: Web server
+- **FastAPI + uvicorn**: Web server (API + backend)
 - **sentence-transformers**: Question classifier (runs on CPU)
 - **nemo_toolkit[asr]**: NVIDIA Parakeet STT model (runs on GPU)
 - **soundfile**: Audio format handling
@@ -116,12 +116,6 @@ EOF
 If `data/embeddings.npy` doesn't exist (it's gitignored), regenerate it:
 
 ```bash
-pip3 install openpyxl  # Only needed for this step
-
-# If you have the source spreadsheet:
-python3 scripts/extract_questions.py
-
-# If you don't have the spreadsheet, the embeddings can be generated from questions.json:
 python3 -c "
 import numpy as np
 from sentence_transformers import SentenceTransformer
@@ -136,12 +130,68 @@ print(f'Saved {len(embeddings)} embeddings')
 "
 ```
 
-## Step 7: Start the Server
+## Step 7: Set Up Nginx (Video Serving)
+
+Nginx serves static files (videos, frontend) much faster than Python. The API still runs on uvicorn.
+
+```bash
+apt-get update -qq && apt-get install -y -qq nginx
+
+cat > /etc/nginx/sites-available/default << 'NGINX'
+server {
+    listen 9090;
+    client_max_body_size 20M;
+
+    # Video files — served directly by nginx with sendfile for speed
+    location /videos/ {
+        alias /root/HearPaulJennings/OneDrive_1_2-27-2026/;
+        sendfile on;
+        tcp_nopush on;
+        output_buffers 1 128k;
+        expires 1h;
+        add_header Cache-Control "public, immutable";
+    }
+
+    # Static frontend files
+    location / {
+        root /root/HearPaulJennings/frontend;
+        try_files $uri $uri/ /index.html;
+        expires 5m;
+        gzip on;
+        gzip_types text/css application/javascript;
+    }
+
+    # API calls → uvicorn
+    location /api/ {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+NGINX
+
+# Fix permissions so nginx can read the files
+chmod -R o+r /root/HearPaulJennings/OneDrive_1_2-27-2026/
+chmod o+x /root /root/HearPaulJennings /root/HearPaulJennings/OneDrive_1_2-27-2026 \
+  /root/HearPaulJennings/OneDrive_1_2-27-2026/Column\ B \
+  /root/HearPaulJennings/OneDrive_1_2-27-2026/Column\ C \
+  /root/HearPaulJennings/OneDrive_1_2-27-2026/Column\ D \
+  "/root/HearPaulJennings/OneDrive_1_2-27-2026/Extra Videos" \
+  /root/HearPaulJennings/frontend
+
+nginx -t && nginx
+echo "Nginx running on port 9090"
+```
+
+## Step 8: Start the API Server
 
 ```bash
 cd /root/HearPaulJennings
 
-# Start in background
+# Kill Jupyter if it's using port 8080
+lsof -ti :8080 | xargs kill -9 2>/dev/null
+
+# Start uvicorn (API only — nginx handles static files)
 nohup python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8080 > /tmp/uvicorn.log 2>&1 &
 
 # Watch startup logs (first run downloads the Parakeet model, takes a few minutes)
@@ -154,40 +204,95 @@ INFO:     Application startup complete.
 INFO:     Uvicorn running on http://0.0.0.0:8080
 ```
 
-## Step 8: Expose with Cloudflared (HTTPS)
+## Step 9: Expose with HTTPS Tunnel
 
-The browser requires HTTPS for microphone access. Vast.ai's external ports don't support HTTPS natively, so we use Cloudflare Tunnel (cloudflared is pre-installed on Vast base images).
+The browser requires HTTPS for microphone access. There are two approaches depending on whether outbound connections work from your Vast instance.
 
-```bash
-# Start tunnel in background
-nohup cloudflared tunnel --url http://localhost:8080 > /tmp/cloudflared.log 2>&1 &
+### Option A: Cloudflared on the Vast instance (simplest)
 
-# Wait a few seconds, then get your public URL
-sleep 5
-grep -aoP 'https://[a-z0-9-]+\.trycloudflare\.com' /tmp/cloudflared.log | head -1
-```
-
-This gives you a public HTTPS URL like `https://something-something.trycloudflare.com`. Open it in your browser to use the kiosk.
-
-**Note**: Free cloudflared tunnel URLs are temporary and expire. If the URL stops working, restart cloudflared:
+Many Vast instances block outbound DNS (UDP port 53). If cloudflared fails with DNS errors, first set up a DNS-over-HTTPS proxy:
 
 ```bash
-pkill cloudflared
-nohup cloudflared tunnel --url http://localhost:8080 > /tmp/cloudflared.log 2>&1 &
+# Start cloudflared as a DNS proxy (resolves via HTTPS, bypassing blocked UDP DNS)
+nohup cloudflared proxy-dns --port 53 > /tmp/cf-dns.log 2>&1 &
+echo "nameserver 127.0.0.1" > /etc/resolv.conf
 sleep 5
-grep -aoP 'https://[a-z0-9-]+\.trycloudflare\.com' /tmp/cloudflared.log | head -1
+
+# Warm the DNS cache
+dig +short api.trycloudflare.com > /dev/null 2>&1
+dig +short _v2-origintunneld._tcp.argotunnel.com SRV > /dev/null 2>&1
+sleep 2
+
+# Now start the tunnel (pointing to nginx on port 9090)
+nohup cloudflared tunnel --url http://localhost:9090 > /tmp/cloudflared.log 2>&1 &
+sleep 15
+grep -o 'https://[a-z0-9-]*\.trycloudflare\.com' /tmp/cloudflared.log | grep -v api | head -1
 ```
 
-## Step 9: Test It
+If this prints a URL, you're done. If not, check the log:
+```bash
+tail -10 /tmp/cloudflared.log
+```
 
-1. Open the cloudflared URL in Chrome/Firefox
-2. You should see the intro video play, then a still image of Paul Jennings
-3. Click **"Ask a Question"** and grant microphone access
-4. Ask something like *"What was your family like?"*
-5. The system should transcribe, match, and play the corresponding video
-6. Try asking the same question again — you should get a different video variation
+If it says "server misbehaving" or "context deadline exceeded", the instance's network is too restricted for direct tunneling. Use Option B.
+
+### Option B: Tunnel via your local machine (most reliable)
+
+This routes traffic through your local machine's network, which has unrestricted internet access. Your machine must stay on while others are accessing the kiosk.
+
+```bash
+# From your LOCAL machine:
+
+# 1. Open SSH tunnel from your machine to the Vast nginx server
+ssh -i ~/.ssh/id_ed25519 -p <PORT> root@<HOST> -L 9090:localhost:9090 -N -f
+
+# 2. Verify it works
+curl -s -o /dev/null -w '%{http_code}\n' http://localhost:9090/
+
+# 3. Install cloudflared locally if you don't have it
+#    macOS: brew install cloudflared
+#    Linux: See https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/install-and-setup/
+
+# 4. Start the tunnel
+cloudflared tunnel --url http://localhost:9090
+
+# The URL will be printed to the console, e.g.:
+# https://something-something.trycloudflare.com
+```
+
+Share this URL with anyone — it's publicly accessible over HTTPS.
+
+**Note**: Free cloudflared tunnel URLs are temporary. If the URL stops working, restart cloudflared.
+
+## Step 10: Test It
+
+1. Open the tunnel URL in Chrome/Firefox
+2. You should see Paul Jennings' portrait on the left with a question list on the right
+3. **Click any question** in the sidebar to hear Paul's answer
+4. Or click the **mic button** and ask a question by voice
+5. Try asking the same question again — you should get a different video variation
+6. Press **D** to toggle the debug status bar (hidden by default)
+
+## Architecture
+
+```
+Browser → Cloudflare Tunnel (HTTPS) → Nginx (:9090)
+                                        ├── /videos/*  → static files (sendfile)
+                                        ├── /*         → frontend HTML/CSS/JS
+                                        └── /api/*     → uvicorn (:8080) → FastAPI
+                                                          ├── /api/ask       (audio → STT → classify → response)
+                                                          ├── /api/classify  (text → classify → response)
+                                                          └── /api/questions (list all questions)
+```
 
 ## Troubleshooting
+
+### Black screen / videos won't load
+
+- Check nginx is running: `curl -s -o /dev/null -w '%{http_code}\n' http://localhost:9090/`
+- Check video serving: `curl -s -o /dev/null -w '%{http_code}\n' http://localhost:9090/videos/Column%20B/B2.mp4`
+- If you get 403, re-run the `chmod` commands from Step 7
+- If you get 404, check the video folder structure matches `data/questions.json`
 
 ### "CUDA graphs" errors in logs
 
@@ -229,23 +334,45 @@ else:
 
 ### Microphone not working
 
-- Must be served over HTTPS (use cloudflared)
+- Must be served over HTTPS (use the tunnel)
 - Grant microphone permission when the browser prompts
 - Check browser console for errors
+- Note: Mic is optional — visitors can tap questions directly from the sidebar
 
 ### Server won't start / port in use
 
 ```bash
-# Find what's using port 8080
-lsof -i :8080
+# Kill Jupyter or previous server on port 8080
+lsof -ti :8080 | xargs kill -9
 
-# Kill previous server instances
-pkill -f uvicorn
-
-# Restart
+# Restart uvicorn
 cd /root/HearPaulJennings
 nohup python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8080 > /tmp/uvicorn.log 2>&1 &
 ```
+
+### Cloudflared DNS errors on Vast instance
+
+Many Vast instances block outbound UDP port 53 (DNS). The fix is to use cloudflared's built-in DNS-over-HTTPS proxy:
+
+```bash
+# Kill existing DNS proxy and cloudflared
+pkill cloudflared
+
+# Start DNS proxy (resolves via HTTPS on port 443, not UDP 53)
+nohup cloudflared proxy-dns --port 53 > /tmp/cf-dns.log 2>&1 &
+echo "nameserver 127.0.0.1" > /etc/resolv.conf
+
+# Wait for DNS to be ready, then warm cache
+sleep 5
+dig +short google.com > /dev/null 2>&1
+dig +short api.trycloudflare.com > /dev/null 2>&1
+sleep 2
+
+# Now start the tunnel
+nohup cloudflared tunnel --url http://localhost:9090 > /tmp/cloudflared.log 2>&1 &
+```
+
+If this still fails, use the local machine tunnel approach (Step 9, Option B).
 
 ### SSH connection keeps dropping
 
@@ -256,10 +383,11 @@ Vast.ai's proxy SSH (`ssh<N>.vast.ai`) can be flaky with long transfers. Tips:
 
 ## One-Command Deploy Script
 
-For convenience, here's a single script that does Steps 4-8 after you've cloned the repo and placed the videos:
+For convenience, here's a single script that does Steps 4-9 after you've cloned the repo and placed the videos:
 
 ```bash
 #!/bin/bash
+set -e
 cd /root/HearPaulJennings
 
 # Install deps
@@ -283,18 +411,77 @@ print(f'Saved {len(embeddings)} embeddings')
 "
 fi
 
-# Start server
-pkill -f uvicorn 2>/dev/null
+# Set up nginx
+apt-get update -qq && apt-get install -y -qq nginx
+cat > /etc/nginx/sites-available/default << 'NGINX'
+server {
+    listen 9090;
+    client_max_body_size 20M;
+    location /videos/ {
+        alias /root/HearPaulJennings/OneDrive_1_2-27-2026/;
+        sendfile on;
+        tcp_nopush on;
+        output_buffers 1 128k;
+        expires 1h;
+        add_header Cache-Control "public, immutable";
+    }
+    location / {
+        root /root/HearPaulJennings/frontend;
+        try_files $uri $uri/ /index.html;
+        expires 5m;
+        gzip on;
+        gzip_types text/css application/javascript;
+    }
+    location /api/ {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+NGINX
+chmod -R o+r /root/HearPaulJennings/OneDrive_1_2-27-2026/
+chmod o+x /root /root/HearPaulJennings /root/HearPaulJennings/OneDrive_1_2-27-2026 \
+  /root/HearPaulJennings/OneDrive_1_2-27-2026/Column\ B \
+  /root/HearPaulJennings/OneDrive_1_2-27-2026/Column\ C \
+  /root/HearPaulJennings/OneDrive_1_2-27-2026/Column\ D \
+  "/root/HearPaulJennings/OneDrive_1_2-27-2026/Extra Videos" \
+  /root/HearPaulJennings/frontend
+nginx -t && nginx
+echo "Nginx running on port 9090"
+
+# Kill Jupyter on port 8080 if present
+lsof -ti :8080 | xargs kill -9 2>/dev/null || true
+
+# Start API server
+pkill -f uvicorn 2>/dev/null || true
 nohup python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8080 > /tmp/uvicorn.log 2>&1 &
 echo "Waiting for server to start (loading Parakeet model)..."
 until grep -q "Application startup complete" /tmp/uvicorn.log 2>/dev/null; do sleep 2; done
 echo "Server running on port 8080"
 
-# Start tunnel
-pkill cloudflared 2>/dev/null
-nohup cloudflared tunnel --url http://localhost:8080 > /tmp/cloudflared.log 2>&1 &
+# Set up DNS proxy (many Vast instances block UDP DNS)
+nohup cloudflared proxy-dns --port 53 > /tmp/cf-dns.log 2>&1 &
+echo "nameserver 127.0.0.1" > /etc/resolv.conf
 sleep 5
-URL=$(grep -aoP 'https://[a-z0-9-]+\.trycloudflare\.com' /tmp/cloudflared.log | head -1)
-echo ""
-echo "=== Kiosk is live at: $URL ==="
+dig +short api.trycloudflare.com > /dev/null 2>&1
+sleep 2
+
+# Start tunnel
+nohup cloudflared tunnel --url http://localhost:9090 > /tmp/cloudflared.log 2>&1 &
+sleep 15
+URL=$(grep -o 'https://[a-z0-9-]*\.trycloudflare\.com' /tmp/cloudflared.log | grep -v api | head -1)
+
+if [ -n "$URL" ]; then
+  echo ""
+  echo "=== Kiosk is live at: $URL ==="
+else
+  echo ""
+  echo "Cloudflared tunnel failed (common on Vast instances with restricted networking)."
+  echo "Use the local tunnel method instead — from your LOCAL machine run:"
+  echo ""
+  echo "  ssh -i ~/.ssh/id_ed25519 -p <PORT> root@<HOST> -L 9090:localhost:9090 -N -f"
+  echo "  cloudflared tunnel --url http://localhost:9090"
+  echo ""
+  echo "The kiosk is running on the Vast instance at localhost:9090"
+fi
 ```
