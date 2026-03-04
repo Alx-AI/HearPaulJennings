@@ -40,7 +40,7 @@ html, body {
   flex: 4;
   min-width: 0;
   overflow: hidden;
-  background: var(--bg);
+  background: var(--bg) url('idle-poster.jpg') center center / cover no-repeat;
 }
 
 /* ─── Ambient Glow ─── */
@@ -109,7 +109,7 @@ html, body {
   height: 100%;
   object-fit: cover;
   z-index: 1;
-  background: var(--bg);
+  background: transparent;
   transition: opacity 0.4s ease;
 }
 

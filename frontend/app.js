@@ -50,20 +50,16 @@ function preloadVideo(url) {
 // ─── Idle State ───
 
 function showIdle() {
-  // Fade out, then reset to poster
+  // Fade out video, revealing the poster background behind it
   player.classList.add("fade-out");
   setTimeout(() => {
     player.pause();
     player.removeAttribute("src");
     player.load();
-    player.poster = IDLE_POSTER;
     captionOverlay.classList.add("hidden");
     setState("idle");
     clearActiveQuestion();
-    // Small delay then fade back in
-    requestAnimationFrame(() => {
-      player.classList.remove("fade-out");
-    });
+    // Keep video transparent in idle — panel background shows the poster
   }, 400);
 }
 
@@ -72,8 +68,8 @@ function showIdle() {
 async function init() {
   player.preload = "auto";
 
-  // Show idle poster immediately so the screen isn't black
-  player.poster = IDLE_POSTER;
+  // Start with video hidden — CSS background on #video-panel shows the poster
+  player.classList.add("fade-out");
 
   // Pre-buffer walkoff video
   preloadVideo(WALKOFF_VIDEO);
