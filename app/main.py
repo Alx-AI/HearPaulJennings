@@ -68,6 +68,17 @@ async def classify_text(body: dict):
     })
 
 
+@app.get("/api/questions")
+async def list_questions():
+    """Return the list of available questions for the sidebar."""
+    from app.questions import get_questions
+    questions = get_questions()
+    return JSONResponse([
+        {"id": q["id"], "question": q["question"]}
+        for q in questions
+    ])
+
+
 # Static file mounts (order matters — more specific first)
 app.mount("/videos", StaticFiles(directory=str(VIDEO_DIR)), name="videos")
 app.mount("/", StaticFiles(directory=str(FRONTEND_DIR), html=True), name="frontend")

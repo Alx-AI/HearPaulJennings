@@ -1,4 +1,4 @@
-/* Hear Paul Jennings — Period-inspired kiosk UI */
+/* Hear Paul Jennings — V2 Split-Screen Kiosk UI */
 
 * {
   margin: 0;
@@ -7,228 +7,498 @@
 }
 
 :root {
-  --bg-dark: #1a1410;
-  --bg-panel: #2a2218;
+  --bg: #080604;
   --gold: #c4a25a;
-  --gold-dim: #8a7340;
-  --cream: #e8dcc8;
+  --gold-glow: rgba(196, 162, 90, 0.2);
+  --glass: rgba(10, 8, 6, 0.6);
+  --glass-border: rgba(196, 162, 90, 0.15);
   --text: #f0e8d8;
-  --text-dim: #a09080;
+  --text-dim: rgba(240, 232, 216, 0.4);
+  --panel-bg: #0c0a08;
 }
 
 html, body {
   height: 100%;
   overflow: hidden;
-  background: var(--bg-dark);
+  background: var(--bg);
   color: var(--text);
   font-family: "Georgia", "Times New Roman", serif;
 }
 
+/* ─── Split Layout ─── */
+
 #app {
+  position: fixed;
+  inset: 0;
   display: flex;
-  flex-direction: column;
-  height: 100vh;
-  align-items: center;
-  justify-content: center;
 }
 
-/* Video */
-#video-container {
+/* ─── Video Panel (Left ~60%) ─── */
+
+#video-panel {
   position: relative;
-  width: 100%;
-  max-width: 960px;
-  aspect-ratio: 16/9;
-  background: #000;
-  border: 3px solid var(--gold-dim);
-  border-radius: 4px;
+  flex: 3;
+  min-width: 0;
   overflow: hidden;
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+  background: var(--bg);
 }
+
+/* ─── Ambient Glow ─── */
+
+#ambient-glow {
+  position: absolute;
+  inset: -10%;
+  z-index: 0;
+  background: radial-gradient(
+    ellipse at 50% 60%,
+    rgba(196, 162, 90, 0.12) 0%,
+    rgba(140, 100, 40, 0.06) 40%,
+    transparent 70%
+  );
+  opacity: 0.4;
+  animation: glow-breathe 8s ease-in-out infinite;
+  pointer-events: none;
+  transition: opacity 1.5s ease, filter 1.5s ease;
+}
+
+@keyframes glow-breathe {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.03); }
+}
+
+/* Glow state variations */
+[data-state="idle"] #ambient-glow {
+  opacity: 0.4;
+}
+
+[data-state="recording"] #ambient-glow {
+  opacity: 0.85;
+  background: radial-gradient(
+    ellipse at 50% 60%,
+    rgba(196, 162, 90, 0.25) 0%,
+    rgba(200, 120, 60, 0.12) 40%,
+    transparent 70%
+  );
+}
+
+[data-state="processing"] #ambient-glow {
+  opacity: 0.6;
+  animation: glow-pulse-thinking 2s ease-in-out infinite;
+}
+
+@keyframes glow-pulse-thinking {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.7; }
+}
+
+[data-state="playing"] #ambient-glow,
+[data-state="walkoff"] #ambient-glow {
+  opacity: 0.2;
+}
+
+[data-state="intro"] #ambient-glow {
+  opacity: 0.3;
+}
+
+/* ─── Video ─── */
 
 #player {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: contain;
-  background: #000;
+  object-fit: cover;
+  z-index: 1;
+  background: var(--bg);
+  transition: opacity 0.4s ease;
 }
 
-/* Caption overlay — outlined text style per reference */
+#player.fade-out {
+  opacity: 0;
+}
+
+/* Idle poster Ken Burns breathing effect */
+[data-state="idle"] #player {
+  animation: ken-burns 12s ease-in-out infinite;
+}
+
+@keyframes ken-burns {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+/* ─── Caption Overlay — Glassmorphic ─── */
+
 #caption-overlay {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 16px 24px;
+  bottom: 120px;
+  left: 5%;
+  right: 5%;
+  z-index: 3;
+  padding: 18px 28px;
   text-align: center;
-  font-size: 1.15rem;
-  line-height: 1.5;
-  color: #fff;
-  text-shadow:
-    -1px -1px 0 #000,
-     1px -1px 0 #000,
-    -1px  1px 0 #000,
-     1px  1px 0 #000,
-     0   -2px 0 #000,
-     0    2px 0 #000,
-    -2px  0   0 #000,
-     2px  0   0 #000;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
-  font-weight: 600;
-  transition: opacity 0.3s ease;
+  font-size: 1.35rem;
+  line-height: 1.6;
+  color: var(--text);
+  font-weight: 500;
+  background: var(--glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  transform: translateY(0);
+  opacity: 1;
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
 #caption-overlay.hidden {
   opacity: 0;
+  transform: translateY(12px);
   pointer-events: none;
 }
 
-/* Controls */
+/* ─── Controls ─── */
+
 #controls {
-  margin-top: 24px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 4;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-bottom: 36px;
   gap: 12px;
-  min-height: 80px;
+  pointer-events: none;
 }
+
+#controls > * {
+  pointer-events: auto;
+}
+
+/* ─── Waveform Canvas ─── */
+
+#waveform {
+  width: 120px;
+  height: 40px;
+  transition: opacity 0.4s ease;
+}
+
+#waveform.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ─── Mic Button — Glassmorphic Circle ─── */
 
 #ask-btn {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 14px 32px;
-  background: var(--gold);
-  color: var(--bg-dark);
-  border: none;
-  border-radius: 50px;
-  font-family: inherit;
-  font-size: 1.1rem;
-  font-weight: 700;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 1px solid rgba(196, 162, 90, 0.25);
+  background: rgba(196, 162, 90, 0.12);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: var(--gold);
   cursor: pointer;
-  transition: background 0.2s, transform 0.1s;
-  letter-spacing: 0.02em;
+  transition: all 0.4s ease;
+  box-shadow: 0 0 30px var(--gold-glow), 0 0 60px rgba(196, 162, 90, 0.08);
+  animation: btn-glow-pulse 3s ease-in-out infinite;
+}
+
+@keyframes btn-glow-pulse {
+  0%, 100% { box-shadow: 0 0 24px var(--gold-glow), 0 0 48px rgba(196, 162, 90, 0.06); }
+  50% { box-shadow: 0 0 36px rgba(196, 162, 90, 0.3), 0 0 72px rgba(196, 162, 90, 0.1); }
 }
 
 #ask-btn:hover {
-  background: #d4b26a;
-  transform: scale(1.03);
+  background: rgba(196, 162, 90, 0.2);
+  box-shadow: 0 0 40px rgba(196, 162, 90, 0.35), 0 0 80px rgba(196, 162, 90, 0.12);
+  transform: scale(1.06);
 }
 
 #ask-btn:active {
-  transform: scale(0.97);
+  transform: scale(0.95);
 }
 
 #ask-btn:disabled {
-  opacity: 0.4;
+  opacity: 0.3;
   cursor: not-allowed;
+  animation: none;
+  box-shadow: none;
   transform: none;
 }
 
-#ask-btn.recording {
-  background: #c44;
-  color: #fff;
+/* Recording state — red tint */
+[data-state="recording"] #ask-btn {
+  background: rgba(200, 60, 60, 0.25);
+  border-color: rgba(200, 80, 80, 0.4);
+  color: #e8a0a0;
+  box-shadow: 0 0 36px rgba(200, 60, 60, 0.3), 0 0 72px rgba(200, 60, 60, 0.1);
+  animation: btn-recording-pulse 1.5s ease-in-out infinite;
 }
 
-/* Recording indicator */
+@keyframes btn-recording-pulse {
+  0%, 100% { box-shadow: 0 0 30px rgba(200, 60, 60, 0.25); }
+  50% { box-shadow: 0 0 50px rgba(200, 60, 60, 0.45), 0 0 90px rgba(200, 60, 60, 0.15); }
+}
+
+/* ─── Prompt Text ─── */
+
+#prompt-text {
+  font-size: 0.85rem;
+  color: rgba(240, 232, 216, 0.5);
+  letter-spacing: 0.03em;
+  transition: opacity 0.5s ease;
+}
+
+/* Hide prompt text during non-idle states */
+[data-state="recording"] #prompt-text,
+[data-state="processing"] #prompt-text,
+[data-state="playing"] #prompt-text,
+[data-state="walkoff"] #prompt-text,
+[data-state="intro"] #prompt-text {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ─── Recording Indicator ─── */
+
 #recording-indicator {
   display: flex;
   align-items: center;
-  gap: 10px;
-  color: #e55;
-  font-size: 0.95rem;
+  gap: 8px;
+  color: var(--gold);
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  transition: opacity 0.4s ease;
 }
 
-#recording-indicator.hidden,
-#processing-indicator.hidden {
-  display: none;
+#recording-indicator.hidden {
+  opacity: 0;
+  pointer-events: none;
 }
 
-.pulse-ring {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: #e55;
-  animation: pulse 1.2s ease-in-out infinite;
+#recording-indicator span {
+  animation: text-pulse 2s ease-in-out infinite;
 }
 
-@keyframes pulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.5); opacity: 0.4; }
+@keyframes text-pulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
 }
 
-/* Processing spinner */
+/* ─── Processing Indicator ─── */
+
 #processing-indicator {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  transition: opacity 0.4s ease;
+}
+
+#processing-indicator.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#processing-indicator span {
+  animation: ellipsis-fade 2s steps(3) infinite;
+}
+
+@keyframes ellipsis-fade {
+  0% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.4; }
+}
+
+/* ─── Question Panel (Right ~40%) ─── */
+
+#question-panel {
+  flex: 2;
+  min-width: 0;
+  background: var(--panel-bg);
+  border-left: 1px solid var(--glass-border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#panel-title {
+  padding: 28px 28px 20px;
+  font-size: 1.1rem;
+  font-weight: 600;
   color: var(--gold);
-  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  border-bottom: 1px solid rgba(196, 162, 90, 0.08);
 }
 
-.spinner {
-  width: 18px;
-  height: 18px;
-  border: 2px solid var(--gold-dim);
-  border-top-color: var(--gold);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+#question-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 12px 12px;
+  gap: 2px;
+  overflow: hidden;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
+/* ─── Question Buttons ─── */
+
+.question-btn {
+  display: block;
+  width: 100%;
+  padding: 10px 16px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  flex-shrink: 0;
 }
 
-/* Status bar */
+.question-btn:hover {
+  background: rgba(196, 162, 90, 0.08);
+  border-color: var(--glass-border);
+}
+
+.question-btn:active {
+  background: rgba(196, 162, 90, 0.15);
+  transform: scale(0.98);
+}
+
+.question-btn.active {
+  background: rgba(196, 162, 90, 0.12);
+  border-color: rgba(196, 162, 90, 0.25);
+  color: var(--gold);
+  box-shadow: 0 0 20px rgba(196, 162, 90, 0.06);
+}
+
+.question-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Dim questions during non-idle states (except active one) */
+[data-state="playing"] .question-btn:not(.active),
+[data-state="processing"] .question-btn:not(.active),
+[data-state="recording"] .question-btn:not(.active),
+[data-state="walkoff"] .question-btn:not(.active) {
+  opacity: 0.35;
+}
+
+/* ─── Status Bar (Debug) ─── */
+
 #status-bar {
-  margin-top: 12px;
-  padding: 8px 20px;
-  background: var(--bg-panel);
-  border: 1px solid var(--gold-dim);
-  border-radius: 6px;
-  max-width: 600px;
-  text-align: center;
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+  padding: 10px 18px;
+  background: rgba(10, 8, 6, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  max-width: 400px;
+  transition: opacity 0.4s ease;
 }
 
 #status-bar.hidden {
-  display: none;
+  opacity: 0;
+  pointer-events: none;
 }
 
 #status-text {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--text-dim);
+  line-height: 1.4;
 }
 
-/* Tap-to-start overlay (shown when autoplay blocked) */
+/* ─── Tap-to-Start Overlay ─── */
+
 #tap-overlay {
-  position: absolute;
+  position: fixed;
   inset: 0;
+  z-index: 20;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(8, 6, 4, 0.85);
   cursor: pointer;
-  z-index: 10;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 #tap-overlay span {
-  font-size: 1.6rem;
-  font-weight: 700;
+  font-size: 1.4rem;
+  font-weight: 600;
   color: var(--gold);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  padding: 18px 40px;
-  border: 2px solid var(--gold);
-  border-radius: 8px;
-  transition: background 0.2s;
+  padding: 20px 48px;
+  border: 1px solid rgba(196, 162, 90, 0.3);
+  border-radius: 60px;
+  background: rgba(196, 162, 90, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: all 0.3s ease;
 }
 
 #tap-overlay:hover span {
   background: rgba(196, 162, 90, 0.15);
+  box-shadow: 0 0 40px var(--gold-glow);
 }
 
-/* Fullscreen kiosk feel */
-@media (min-width: 1200px) {
-  #video-container {
-    max-width: 1100px;
+/* ─── Kiosk responsive ─── */
+
+@media (min-height: 900px) {
+  #controls {
+    padding-bottom: 48px;
+  }
+
+  #ask-btn {
+    width: 72px;
+    height: 72px;
+  }
+
+  #ask-btn svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  #caption-overlay {
+    font-size: 1.5rem;
+    bottom: 140px;
+  }
+
+  .question-btn {
+    padding: 12px 18px;
+    font-size: 0.88rem;
+  }
+}
+
+@media (min-height: 1100px) {
+  .question-btn {
+    padding: 13px 20px;
+    font-size: 0.92rem;
+  }
+
+  #panel-title {
+    padding: 32px 32px 24px;
+    font-size: 1.2rem;
   }
 }
