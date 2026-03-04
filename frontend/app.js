@@ -72,16 +72,26 @@ function showIdle() {
 async function init() {
   player.preload = "auto";
 
+  // Show idle poster immediately so the screen isn't black
+  player.poster = IDLE_POSTER;
+
   // Pre-buffer walkoff video
   preloadVideo(WALKOFF_VIDEO);
 
   // Load question list into sidebar
   loadQuestions();
 
-  // Play intro once, then go to idle poster
+  // Try to play intro — but don't block forever
   setState("intro");
-  const played = await playVideo(INTRO_VIDEO);
-  if (!played) {
+  const playPromise = playVideo(INTRO_VIDEO);
+  const timeoutPromise = new Promise((resolve) => setTimeout(() => resolve("timeout"), 8000));
+  const result = await Promise.race([playPromise, timeoutPromise]);
+
+  if (result === "timeout") {
+    // Video took too long to buffer — skip to idle
+    player.pause();
+    showIdle();
+  } else if (!result) {
     // Autoplay blocked — show tap-to-start overlay
     showTapToStart();
   }
@@ -227,9 +237,9 @@ function playVideo(url, caption) {
         { once: true }
       );
 
-      // Wait for enough data buffered before playing
+      // Wait for enough data to start playing
       player.addEventListener(
-        "canplaythrough",
+        "canplay",
         () => {
           player.classList.remove("fade-out");
           player.play()
