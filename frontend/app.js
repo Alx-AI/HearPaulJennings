@@ -436,7 +436,7 @@ function handleResponse(data) {
   if (data.video_url) {
     lastResponseWasFallback = data.is_fallback;
     setState("playing");
-    playVideo(data.video_url, data.answer);
+    playVideo(data.video_url);
   } else {
     showStatus("No video available for this response.");
     setState("idle");
