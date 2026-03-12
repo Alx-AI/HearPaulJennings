@@ -329,6 +329,17 @@ html, body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  transition: flex 0.5s ease, opacity 0.4s ease, max-width 0.5s ease;
+  max-width: 43%;
+}
+
+#question-panel.panel-hidden {
+  flex: 0;
+  max-width: 0;
+  opacity: 0;
+  border-left: none;
+  overflow: hidden;
+  pointer-events: none;
 }
 
 #panel-title {

@@ -20,7 +20,7 @@ let state = "idle";
 let expectedVideo = null; // track which video we're waiting on
 let videoGeneration = 0; // increments each playVideo call to ignore stale events
 let currentGeneration = 0; // set when video actually starts playing
-let lastResponseWasFallback = false; // walkoff only after fallback/inappropriate
+let lastResponseWasProfanity = false; // walkoff only after profanity detected
 
 const INTRO_VIDEO = "/videos/Extra Videos/Intro.mp4";
 const WALKOFF_VIDEO = "/videos/Extra Videos/Jennings Walks Off (1).mp4";
@@ -268,13 +268,8 @@ player.addEventListener("ended", () => {
   if (state === "intro") {
     // Intro finished — show idle poster
     showIdle();
-  } else if (state === "playing" && lastResponseWasFallback) {
-    // Inappropriate/unmatched question — play walkoff dismissal
-    setState("walkoff");
-    captionOverlay.classList.add("hidden");
-    playVideo(WALKOFF_VIDEO);
   } else if (state === "playing") {
-    // Normal answer finished — return to idle poster
+    // Answer finished — return to idle poster
     showIdle();
   } else if (state === "walkoff") {
     // Walkoff finished — return to idle poster
@@ -434,13 +429,21 @@ async function processAudio(blob) {
 }
 
 function handleResponse(data) {
+  if (data.is_profanity) {
+    showStatus(`Profanity detected: "${data.transcription}" — playing walkoff`);
+    lastResponseWasProfanity = true;
+    setState("walkoff");
+    playVideo(WALKOFF_VIDEO);
+    return;
+  }
+
   const info = data.is_fallback
     ? `I didn't quite catch that (confidence: ${data.confidence})`
     : `Matched: "${data.matched_question}" (${data.confidence})`;
   showStatus(`You said: "${data.transcription}" — ${info}`);
 
   if (data.video_url) {
-    lastResponseWasFallback = data.is_fallback;
+    lastResponseWasProfanity = false;
     setState("playing");
     playVideo(data.video_url);
   } else {
@@ -455,14 +458,18 @@ function showStatus(msg) {
   statusText.textContent = msg;
 }
 
-// ─── Debug Toggle ───
+// ─── Keyboard Toggles ───
 
 let debugVisible = false;
+const questionPanel = document.getElementById("question-panel");
 
 document.addEventListener("keydown", (e) => {
   if (e.key === "d" || e.key === "D") {
     debugVisible = !debugVisible;
     statusBar.classList.toggle("hidden", !debugVisible);
+  }
+  if (e.key === "q" || e.key === "Q") {
+    questionPanel.classList.toggle("panel-hidden");
   }
 });
 

@@ -8,8 +8,11 @@ from fastapi.staticfiles import StaticFiles
 
 from app.config import VIDEO_DIR, FRONTEND_DIR
 from app.classifier import load_classifier, classify
+from app.profanity import contains_profanity
 from app.questions import load_questions
 from app.transcriber import get_transcriber
+
+WALKOFF_VIDEO = "Extra Videos/Jennings Walks Off (1).mp4"
 
 
 @asynccontextmanager
@@ -35,6 +38,20 @@ async def ask(audio: UploadFile = File(...)):
     if not text.strip():
         raise HTTPException(status_code=400, detail="Could not transcribe audio")
 
+    # Profanity check — triggers walkoff
+    if contains_profanity(text):
+        return JSONResponse({
+            "transcription": text,
+            "question_id": None,
+            "matched_question": None,
+            "answer": None,
+            "video_url": f"/videos/{WALKOFF_VIDEO}",
+            "variation": None,
+            "confidence": 0.0,
+            "is_fallback": False,
+            "is_profanity": True,
+        })
+
     result, confidence = classify(text)
 
     return JSONResponse({
@@ -46,6 +63,7 @@ async def ask(audio: UploadFile = File(...)):
         "variation": result.variation,
         "confidence": round(confidence, 3),
         "is_fallback": result.is_fallback,
+        "is_profanity": False,
     })
 
 
@@ -55,6 +73,21 @@ async def classify_text(body: dict):
     text = body.get("text", "")
     if not text:
         raise HTTPException(status_code=400, detail="No text provided")
+
+    # Profanity check — triggers walkoff
+    if contains_profanity(text):
+        return JSONResponse({
+            "transcription": text,
+            "question_id": None,
+            "matched_question": None,
+            "answer": None,
+            "video_url": f"/videos/{WALKOFF_VIDEO}",
+            "variation": None,
+            "confidence": 0.0,
+            "is_fallback": False,
+            "is_profanity": True,
+        })
+
     result, confidence = classify(text)
     return JSONResponse({
         "transcription": text,
@@ -65,6 +98,7 @@ async def classify_text(body: dict):
         "variation": result.variation,
         "confidence": round(confidence, 3),
         "is_fallback": result.is_fallback,
+        "is_profanity": False,
     })
 
 
