@@ -10,6 +10,7 @@ const statusText = document.getElementById("status-text");
 const waveformCanvas = document.getElementById("waveform");
 const promptText = document.getElementById("prompt-text");
 const questionList = document.getElementById("question-list");
+const skipBtn = document.getElementById("skip-btn");
 
 let mediaRecorder = null;
 let audioChunks = [];
@@ -79,6 +80,8 @@ async function init() {
 
   // Try to play intro — but don't block forever
   setState("intro");
+  skipBtn.classList.remove("hidden");
+
   const playPromise = playVideo(INTRO_VIDEO);
   const timeoutPromise = new Promise((resolve) => setTimeout(() => resolve("timeout"), 8000));
   const result = await Promise.race([playPromise, timeoutPromise]);
@@ -86,11 +89,20 @@ async function init() {
   if (result === "timeout") {
     // Video took too long to buffer — skip to idle
     player.pause();
+    skipBtn.classList.add("hidden");
     showIdle();
   } else if (!result) {
     // Autoplay blocked — show tap-to-start overlay
+    skipBtn.classList.add("hidden");
     showTapToStart();
   }
+}
+
+function skipIntro() {
+  if (state !== "intro") return;
+  player.pause();
+  skipBtn.classList.add("hidden");
+  showIdle();
 }
 
 // Overlay for when autoplay is blocked by browser policy
@@ -266,7 +278,8 @@ player.addEventListener("ended", () => {
   if (currentGeneration !== videoGeneration) return;
 
   if (state === "intro") {
-    // Intro finished — show idle poster
+    // Intro finished — hide skip button, show idle poster
+    skipBtn.classList.add("hidden");
     showIdle();
   } else if (state === "playing") {
     // Answer finished — return to idle poster
@@ -474,6 +487,8 @@ document.addEventListener("keydown", (e) => {
 });
 
 // ─── Event Listeners ───
+
+skipBtn.addEventListener("click", skipIntro);
 
 askBtn.addEventListener("click", () => {
   if (state === "recording") {
