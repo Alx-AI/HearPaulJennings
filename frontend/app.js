@@ -118,6 +118,7 @@ function showTapToStart() {
       overlay.remove();
       player.muted = false;
       setState("intro");
+      skipBtn.classList.remove("hidden");
       playVideo(INTRO_VIDEO);
     },
     { once: true }
