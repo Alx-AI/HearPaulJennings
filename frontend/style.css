@@ -117,10 +117,6 @@ html, body {
   opacity: 0;
 }
 
-[data-state="walkoff"] #player {
-  object-fit: contain;
-}
-
 /* Idle poster Ken Burns breathing effect */
 [data-state="idle"] #player {
   animation: ken-burns 12s ease-in-out infinite;
