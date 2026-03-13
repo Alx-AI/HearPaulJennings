@@ -133,6 +133,10 @@ html, body {
   background-color: #000;
 }
 
+[data-state="walkoff"] #player {
+  object-fit: contain;
+}
+
 /* ─── Caption Overlay — Glassmorphic ─── */
 
 #caption-overlay {

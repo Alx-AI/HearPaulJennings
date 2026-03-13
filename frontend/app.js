@@ -24,7 +24,7 @@ let currentGeneration = 0; // set when video actually starts playing
 let lastResponseWasProfanity = false; // walkoff only after profanity detected
 
 const INTRO_VIDEO = "/videos/Extra Videos/Intro.mp4";
-const WALKOFF_VIDEO = "/videos/Extra Videos/Jennings Walks Off (1).mp4";
+const WALKOFF_VIDEO = "/videos/Extra Videos/Jennings Walks Off (1).mp4?v=2";
 const IDLE_POSTER = "idle-poster.jpg";
 
 // Waveform visualization state
