@@ -72,6 +72,42 @@ class LocalTranscriber(Transcriber):
         return ".webm"
 
 
+class WhisperTranscriber(Transcriber):
+    """faster-whisper running on GPU. Lighter than Parakeet, works on restricted networks."""
+
+    def __init__(self):
+        from faster_whisper import WhisperModel
+        self.model = WhisperModel("base.en", device="cuda", compute_type="float16")
+
+    async def transcribe(self, audio_bytes: bytes, content_type: str = "audio/webm") -> str:
+        import subprocess
+
+        with tempfile.NamedTemporaryFile(suffix=self._ext(content_type), delete=False) as tmp_in:
+            tmp_in.write(audio_bytes)
+            tmp_in_path = tmp_in.name
+
+        with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp_wav:
+            tmp_wav_path = tmp_wav.name
+
+        subprocess.run(
+            ["ffmpeg", "-y", "-i", tmp_in_path, "-ar", "16000", "-ac", "1", tmp_wav_path],
+            capture_output=True,
+        )
+
+        segments, _ = self.model.transcribe(tmp_wav_path, language="en")
+        return " ".join(seg.text for seg in segments).strip()
+
+    @staticmethod
+    def _ext(content_type: str) -> str:
+        if "webm" in content_type:
+            return ".webm"
+        if "wav" in content_type:
+            return ".wav"
+        if "ogg" in content_type:
+            return ".ogg"
+        return ".webm"
+
+
 class GroqTranscriber(Transcriber):
     API_URL = "https://api.groq.com/openai/v1/audio/transcriptions"
 
@@ -95,4 +131,6 @@ class GroqTranscriber(Transcriber):
 def get_transcriber() -> Transcriber:
     if STT_BACKEND == "local":
         return LocalTranscriber()
+    if STT_BACKEND == "whisper":
+        return WhisperTranscriber()
     return GroqTranscriber()
