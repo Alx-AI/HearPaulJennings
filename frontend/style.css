@@ -127,6 +127,16 @@ html, body {
   50% { transform: scale(1.02); }
 }
 
+/* Walkoff: hide poster, black background, contain video (pillarbox-safe) */
+[data-state="walkoff"] #video-panel {
+  background-image: none;
+  background-color: #000;
+}
+
+[data-state="walkoff"] #player {
+  object-fit: contain;
+}
+
 /* ─── Caption Overlay — Glassmorphic ─── */
 
 #caption-overlay {
