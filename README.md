@@ -35,7 +35,7 @@ Browser (mic) → FastAPI Backend → Parakeet STT (local GPU)
 HearPaulJennings/
 ├── app/
 │   ├── main.py              # FastAPI app, routes, static file serving
-│   ├── transcriber.py       # STT — Parakeet (local) or Groq (fallback)
+│   ├── transcriber.py       # STT — NVIDIA Parakeet (local GPU)
 │   ├── classifier.py        # Semantic similarity matching
 │   ├── questions.py         # Question/answer/video data loader
 │   └── config.py            # Settings (env vars, paths, thresholds)
@@ -59,36 +59,35 @@ HearPaulJennings/
 └── SETUP_VAST.md            # Step-by-step deployment guide
 ```
 
-## Quick Start (Local Development on Mac)
+## Quick Start
 
-Local dev uses the Groq Whisper API for STT since Parakeet requires CUDA.
+STT requires an NVIDIA GPU with CUDA (Parakeet runs locally on the GPU). See **[SETUP_VAST.md](SETUP_VAST.md)** for deploying on a Vast.ai GPU instance.
 
 ```bash
 git clone https://github.com/Alx-AI/HearPaulJennings.git
 cd HearPaulJennings
 
-# Install dependencies
-pip install fastapi uvicorn python-multipart httpx sentence-transformers numpy python-dotenv
+# Install dependencies (requires CUDA-capable GPU)
+pip install fastapi uvicorn python-multipart httpx sentence-transformers numpy python-dotenv 'nemo_toolkit[asr]' soundfile
 
 # Download videos (see SETUP_VAST.md for the Google Drive link)
 # Place the OneDrive_1_2-27-2026/ folder in the project root
 
 # Configure environment
-echo 'GROQ_API_KEY=your-key-here' > .env
-echo 'STT_BACKEND=groq' >> .env
+echo 'STT_BACKEND=local' > .env
 
 # Generate embeddings (first time only)
 python scripts/extract_questions.py
 
-# Start server
+# Start server (Parakeet model downloads on first run, ~600 MB)
 uvicorn app.main:app --host 0.0.0.0 --port 8080
 ```
 
 Open http://localhost:8080 in your browser.
 
-## Production Deployment (RTX 5090 on Vast.ai)
+## Production Deployment (GPU on Vast.ai)
 
-See **[SETUP_VAST.md](SETUP_VAST.md)** for complete step-by-step instructions to deploy on a Vast.ai GPU instance with local Parakeet STT.
+See **[SETUP_VAST.md](SETUP_VAST.md)** for complete step-by-step instructions to deploy on a Vast.ai GPU instance.
 
 ## Video Content
 

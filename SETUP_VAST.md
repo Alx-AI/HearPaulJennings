@@ -84,6 +84,8 @@ ls OneDrive_1_2-27-2026/Extra\ Videos/ | wc -l  # Should be 6
 
 ## Step 4: Install Python Dependencies
 
+A GPU instance is required because the NVIDIA Parakeet STT model runs locally on the GPU (no external API calls).
+
 ```bash
 cd /root/HearPaulJennings
 
@@ -93,10 +95,10 @@ pip3 install fastapi uvicorn python-multipart httpx sentence-transformers numpy 
 This installs:
 - **FastAPI + uvicorn**: Web server (API + backend)
 - **sentence-transformers**: Question classifier (runs on CPU)
-- **nemo_toolkit[asr]**: NVIDIA Parakeet STT model (runs on GPU)
+- **nemo_toolkit[asr]**: NVIDIA Parakeet TDT 0.6B v2 for local STT (runs on GPU, ~2-3 GB VRAM)
 - **soundfile**: Audio format handling
 
-The Parakeet model (~600 MB) will be downloaded automatically on first startup.
+The Parakeet model (~600 MB) downloads automatically on first startup and may take a minute or two.
 
 ## Step 5: Configure Environment
 
@@ -104,12 +106,11 @@ The Parakeet model (~600 MB) will be downloaded automatically on first startup.
 cd /root/HearPaulJennings
 
 cat > .env << 'EOF'
-GROQ_API_KEY=
 STT_BACKEND=local
 EOF
 ```
 
-`STT_BACKEND=local` tells the app to use Parakeet (GPU) instead of the Groq API.
+`STT_BACKEND=local` uses NVIDIA Parakeet for local GPU-based speech-to-text. No API keys are needed.
 
 ## Step 6: Generate Embeddings
 
@@ -393,8 +394,8 @@ cd /root/HearPaulJennings
 # Install deps
 pip3 install fastapi uvicorn python-multipart httpx sentence-transformers numpy python-dotenv 'nemo_toolkit[asr]' soundfile
 
-# Configure
-echo -e "GROQ_API_KEY=\nSTT_BACKEND=local" > .env
+# Configure (local Parakeet STT — no API keys needed)
+echo "STT_BACKEND=local" > .env
 
 # Generate embeddings if needed
 if [ ! -f data/embeddings.npy ]; then
