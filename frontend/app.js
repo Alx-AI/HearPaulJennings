@@ -11,6 +11,9 @@ const waveformCanvas = document.getElementById("waveform");
 const promptText = document.getElementById("prompt-text");
 const questionList = document.getElementById("question-list");
 const skipBtn = document.getElementById("skip-btn");
+const questionToggleBtn = document.getElementById("question-toggle-btn");
+const leftPanel = document.getElementById("left-panel");
+const rightPanel = document.getElementById("right-panel");
 
 let mediaRecorder = null;
 let audioChunks = [];
@@ -53,6 +56,7 @@ function preloadVideo(url) {
 function showIdle() {
   // Fade out video, revealing the poster background behind it
   player.classList.add("fade-out");
+  fadeStarted = false;
   setTimeout(() => {
     player.pause();
     player.removeAttribute("src");
@@ -61,7 +65,7 @@ function showIdle() {
     setState("idle");
     clearActiveQuestion();
     // Keep video transparent in idle — panel background shows the poster
-  }, 400);
+  }, 1200);
 }
 
 // ─── Initialization ───
@@ -274,9 +278,21 @@ function playVideo(url, caption) {
   });
 }
 
+// Fade out video before it ends for smooth transition
+let fadeStarted = false;
+player.addEventListener("timeupdate", () => {
+  if (!player.duration || fadeStarted) return;
+  const remaining = player.duration - player.currentTime;
+  if (remaining <= 1.5 && (state === "walkoff" || state === "playing")) {
+    fadeStarted = true;
+    player.classList.add("fade-out");
+  }
+});
+
 player.addEventListener("ended", () => {
   // Ignore ended events from videos that never actually played
   if (currentGeneration !== videoGeneration) return;
+  fadeStarted = false;
 
   if (state === "intro") {
     // Intro finished — hide skip button, show idle poster
@@ -477,19 +493,27 @@ function showStatus(msg) {
 let debugVisible = false;
 const questionPanel = document.getElementById("question-panel");
 
+function toggleQuestionPanel() {
+  const isHidden = questionPanel.classList.toggle("panel-hidden");
+  leftPanel.classList.toggle("squished", !isHidden);
+  rightPanel.classList.toggle("squished", !isHidden);
+  questionToggleBtn.classList.toggle("panel-open", !isHidden);
+}
+
 document.addEventListener("keydown", (e) => {
   if (e.key === "d" || e.key === "D") {
     debugVisible = !debugVisible;
     statusBar.classList.toggle("hidden", !debugVisible);
   }
   if (e.key === "q" || e.key === "Q") {
-    questionPanel.classList.toggle("panel-hidden");
+    toggleQuestionPanel();
   }
 });
 
 // ─── Event Listeners ───
 
 skipBtn.addEventListener("click", skipIntro);
+questionToggleBtn.addEventListener("click", toggleQuestionPanel);
 
 askBtn.addEventListener("click", () => {
   if (state === "recording") {

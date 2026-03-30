@@ -8,7 +8,12 @@
 </head>
 <body data-state="idle">
   <div id="app">
-    <!-- Left panel: Video experience -->
+    <!-- Left illustration panel -->
+    <div id="left-panel" class="side-panel">
+      <img src="/layout/left_pic.png" alt="" draggable="false" />
+    </div>
+
+    <!-- Center panel: Video experience -->
     <div id="video-panel">
       <!-- Ambient glow layer (behind video) -->
       <div id="ambient-glow"></div>
@@ -44,11 +49,19 @@
       </div>
     </div>
 
-    <!-- Right panel: Question list (hidden by default, toggle with Q key) -->
+    <!-- Right illustration panel -->
+    <div id="right-panel" class="side-panel">
+      <img src="/layout/right_pic.png" alt="" draggable="false" />
+    </div>
+
+    <!-- Question list (hidden by default) -->
     <div id="question-panel" class="panel-hidden">
       <h2 id="panel-title">Ask Paul Jennings</h2>
       <div id="question-list"></div>
     </div>
+
+    <!-- Question toggle button for touch screen -->
+    <button id="question-toggle-btn" aria-label="Show questions">?</button>
 
     <!-- Debug status (hidden by default, toggle with D key) -->
     <div id="status-bar" class="hidden">

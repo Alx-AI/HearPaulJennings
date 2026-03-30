@@ -114,5 +114,6 @@ async def list_questions():
 
 
 # Static file mounts (order matters — more specific first)
+app.mount("/layout", StaticFiles(directory=str(VIDEO_DIR / "layout")), name="layout")
 app.mount("/videos", StaticFiles(directory=str(VIDEO_DIR)), name="videos")
 app.mount("/", StaticFiles(directory=str(FRONTEND_DIR), html=True), name="frontend")
