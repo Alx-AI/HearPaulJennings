@@ -1,40 +1,36 @@
-# Hear Paul Jennings — Windows 11 Deployment Guide
+# Hear Paul Jennings — Windows 11 Setup
 
-Setup for a Windows 11 machine with an NVIDIA GPU. No internet required after initial setup.
+Windows 11 with an NVIDIA GPU. No internet required after initial setup.
 
-## What you need
+## Prerequisites
 
 - Windows 11 PC with an NVIDIA GPU (8+ GB video memory)
-- NVIDIA drivers with CUDA 12+ already installed
-- Admin access to install software
+- NVIDIA drivers with CUDA 12+ installed
+- Administrator access
 
-Open a Command Prompt (search "cmd" in the Start menu, right-click, Run as administrator) and type:
+Verify GPU access by opening Command Prompt (search "cmd", right-click, Run as administrator):
 
 ```
 nvidia-smi
 ```
 
-You should see a table showing your GPU name, driver version, and CUDA version. If CUDA Version shows 12.0 or higher, you're good. If this command fails, install the latest NVIDIA drivers from nvidia.com first.
+The output should show your GPU name and CUDA version 12.0 or higher. If this command fails, install the latest NVIDIA drivers from nvidia.com.
 
 ## Step 1: Install Python
 
 Download Python 3.12 from [python.org](https://www.python.org/downloads/).
 
-Run the installer. On the very first screen, **check the box that says "Add python.exe to PATH"**. This is easy to miss and things will break without it.
+Run the installer. On the first screen, **check "Add python.exe to PATH"**. Without this, Python commands won't be recognized.
 
-Click "Install Now" and let it finish.
-
-Verify it worked. Open a new Command Prompt and type:
+Open a new Command Prompt and verify:
 
 ```
 python --version
 ```
 
-You should see `Python 3.12.x`.
+Expected output: `Python 3.12.x`
 
 ## Step 2: Install ffmpeg
-
-In the same Command Prompt:
 
 ```
 winget install ffmpeg
@@ -48,9 +44,9 @@ ffmpeg -version
 
 ## Step 3: Get the project files
 
-Copy the `HearPaulJennings` folder to somewhere on the PC. For this guide we'll use `C:\HearPaulJennings`.
+Copy the `HearPaulJennings` folder onto the PC. This guide assumes `C:\HearPaulJennings`.
 
-You can get it from a USB drive, a zip file, or by cloning from GitHub:
+From a USB drive, zip file, or GitHub:
 
 ```
 cd C:\
@@ -59,7 +55,7 @@ git clone https://github.com/Alx-AI/HearPaulJennings.git
 
 ## Step 4: Place video files
 
-Download the `OneDrive_1_2-27-2026` folder from Google Drive and place it inside the project so the structure looks like this:
+Download the `OneDrive_1_2-27-2026` folder from Google Drive and place it inside the project:
 
 ```
 C:\HearPaulJennings\
@@ -71,7 +67,7 @@ C:\HearPaulJennings\
     layout\         (left_pic.png, right_pic.png, fullmockup.png)
 ```
 
-Quick count check in Command Prompt:
+Verify file counts:
 
 ```
 dir "C:\HearPaulJennings\OneDrive_1_2-27-2026\Column B\*.mp4" | find "File(s)"
@@ -80,20 +76,18 @@ dir "C:\HearPaulJennings\OneDrive_1_2-27-2026\Column D\*.mp4" | find "File(s)"
 dir "C:\HearPaulJennings\OneDrive_1_2-27-2026\Extra Videos\*.mp4" | find "File(s)"
 ```
 
-You should see 36, 36, 36, and 6 files respectively.
+Expected: 36, 36, 36, and 6 files.
 
 ## Step 5: Install Python packages
-
-Open Command Prompt and run:
 
 ```
 cd C:\HearPaulJennings
 pip install fastapi uvicorn python-multipart httpx sentence-transformers numpy python-dotenv faster-whisper openpyxl
 ```
 
-This downloads a lot of stuff. Give it a few minutes.
+This will take a few minutes.
 
-If your CUDA version is 13 or higher (check the `nvidia-smi` output from earlier), also run:
+If your CUDA version is 13 or higher (per the `nvidia-smi` output), also run:
 
 ```
 pip install nvidia-cublas-cu12
@@ -101,31 +95,21 @@ pip install nvidia-cublas-cu12
 
 ## Step 6: Create the config file
 
-In the `C:\HearPaulJennings` folder, create a file called `.env` with this content:
-
-```
-STT_BACKEND=whisper
-```
-
-You can do this from Command Prompt:
-
 ```
 cd C:\HearPaulJennings
 echo STT_BACKEND=whisper > .env
 ```
 
-This tells the app to use faster-whisper for speech recognition, which runs on the GPU.
-
 ## Step 7: Generate embeddings
 
-The app needs a precomputed file to match spoken questions to answers. If the file `data\embeddings.npy` doesn't already exist, generate it:
+If the file `data\embeddings.npy` does not already exist:
 
 ```
 cd C:\HearPaulJennings
 python -c "import numpy as np, json; from sentence_transformers import SentenceTransformer; model = SentenceTransformer('all-MiniLM-L6-v2'); f = open('data/questions.json'); questions = [q for q in json.load(f) if not q.get('is_fallback')]; embeddings = model.encode([q['question'] for q in questions], normalize_embeddings=True); np.save('data/embeddings.npy', embeddings); print(f'Saved {len(embeddings)} embeddings')"
 ```
 
-This downloads a small AI model on first run (~80 MB) and takes about a minute. You should see "Saved XX embeddings" when it finishes.
+First run downloads a model (~80 MB). Output should read "Saved 35 embeddings".
 
 ## Step 8: Start the server
 
@@ -134,61 +118,59 @@ cd C:\HearPaulJennings
 python -m uvicorn app.main:app --host 0.0.0.0 --port 8080
 ```
 
-The first time you run this, it downloads speech recognition models (~250 MB). Wait until you see:
+First run downloads speech recognition models (~250 MB). Wait for:
 
 ```
 INFO:     Application startup complete.
 ```
 
-If you get an error about `libcublas` or CUDA libraries not being found, run this first, then try again:
+If you see an error about `libcublas` or CUDA libraries, set the library path first:
 
 ```
 set PATH=%LOCALAPPDATA%\Programs\Python\Python312\Lib\site-packages\nvidia\cublas\lib;%PATH%
 python -m uvicorn app.main:app --host 0.0.0.0 --port 8080
 ```
 
-Windows Firewall may pop up asking to allow Python through the firewall. Click "Allow access".
+Windows Firewall may prompt to allow Python network access. Click "Allow access".
 
-## Step 9: Open in a browser
+## Step 9: Open in browser
 
-Open Chrome or Edge and go to:
+Open Chrome or Edge:
 
 ```
 http://localhost:8080
 ```
 
-You should see the kiosk screen: a left building illustration, Paul Jennings in the center, and a ship illustration on the right.
+The kiosk should display with the building illustration on the left, Paul Jennings in the center, and the ship illustration on the right.
 
-## Quick test
+## Verification
 
-1. Click the **?** button (top right) to see the question list
-2. Click any question to hear Paul's answer
-3. Click the **mic** button to ask by voice
-4. Press **D** on the keyboard to toggle debug info
+1. Click the **?** button (top right) to view the question list
+2. Click any question to play the video response
+3. Click the **mic** button and speak a question
+4. Press **D** to toggle debug output
 
-## Running on startup (optional)
-
-To have the kiosk start automatically when the PC boots:
+## Auto-start on boot (optional)
 
 1. Press Windows+R, type `shell:startup`, press Enter
-2. In the folder that opens, right-click > New > Shortcut
-3. For the location, enter:
+2. Right-click in the folder, select New > Shortcut
+3. Location:
    ```
    cmd /k "cd C:\HearPaulJennings && python -m uvicorn app.main:app --host 0.0.0.0 --port 8080"
    ```
 4. Name it "HearPaulJennings"
-5. Set Chrome or Edge to open `http://localhost:8080` on startup (browser settings > "On startup" > open a specific page)
+5. Set the browser to open `http://localhost:8080` on startup (Settings > On startup > Open a specific page)
 
 ## Troubleshooting
 
 | Problem | Fix |
 |---------|-----|
 | `libcublas` or CUDA library errors | `pip install nvidia-cublas-cu12` and set PATH (see Step 8) |
-| `CUDA out of memory` | Close other programs using the GPU. Run `nvidia-smi` to see what's running. |
-| `ffmpeg is not recognized` | `winget install ffmpeg` then reopen Command Prompt |
-| `python is not recognized` | Reinstall Python and check "Add to PATH" (Step 1). Open a new Command Prompt after installing. |
-| Videos don't play | Check folder structure matches Step 4 |
-| Mic not working | Browser needs permission. Click the lock icon in the address bar and allow microphone access. Must be on `localhost`, not an IP. |
+| `CUDA out of memory` | Close other GPU-bound programs. `nvidia-smi` shows what is running. |
+| `ffmpeg is not recognized` | `winget install ffmpeg`, then reopen Command Prompt |
+| `python is not recognized` | Reinstall Python with "Add to PATH" checked. Open a new Command Prompt. |
+| Videos don't play | Verify folder structure matches Step 4 |
+| Mic not working | Allow microphone access in the browser. Must be on `localhost`, not an IP address. |
 | `No module named 'faster_whisper'` | `pip install faster-whisper` |
-| Server won't start / port in use | Open Task Manager, find any running Python processes, end them, then try again |
-| Black screen on idle | Check that `frontend\idle-poster.jpg` exists in the project |
+| Server won't start / port in use | Open Task Manager, end any running Python processes, retry |
+| Black screen on idle | Confirm `frontend\idle-poster.jpg` exists |
