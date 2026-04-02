@@ -44,30 +44,9 @@ ffmpeg -version
 
 ## Step 3: Get the project files
 
-Copy the `HearPaulJennings` folder onto the PC. This guide assumes `C:\HearPaulJennings`.
+Download the `HearPaulJennings` folder from Google Drive and place it on the PC. This guide assumes `C:\HearPaulJennings`.
 
-From a USB drive, zip file, or GitHub:
-
-```
-cd C:\
-git clone https://github.com/Alx-AI/HearPaulJennings.git
-```
-
-## Step 4: Place video files
-
-Download the `OneDrive_1_2-27-2026` folder from Google Drive and place it inside the project:
-
-```
-C:\HearPaulJennings\
-  OneDrive_1_2-27-2026\
-    Column B\       (36 .mp4 files)
-    Column C\       (36 .mp4 files)
-    Column D\       (36 .mp4 files)
-    Extra Videos\   (6 .mp4 files)
-    layout\         (left_pic.png, right_pic.png, fullmockup.png)
-```
-
-Verify file counts:
+The folder includes the application code, video files, and layout images. Verify:
 
 ```
 dir "C:\HearPaulJennings\OneDrive_1_2-27-2026\Column B\*.mp4" | find "File(s)"
@@ -78,7 +57,7 @@ dir "C:\HearPaulJennings\OneDrive_1_2-27-2026\Extra Videos\*.mp4" | find "File(s
 
 Expected: 36, 36, 36, and 6 files.
 
-## Step 5: Install Python packages
+## Step 4: Install Python packages
 
 ```
 cd C:\HearPaulJennings
@@ -93,14 +72,14 @@ If your CUDA version is 13 or higher (per the `nvidia-smi` output), also run:
 pip install nvidia-cublas-cu12
 ```
 
-## Step 6: Create the config file
+## Step 5: Create the config file
 
 ```
 cd C:\HearPaulJennings
 echo STT_BACKEND=whisper > .env
 ```
 
-## Step 7: Generate embeddings
+## Step 6: Generate embeddings
 
 If the file `data\embeddings.npy` does not already exist:
 
@@ -111,7 +90,7 @@ python -c "import numpy as np, json; from sentence_transformers import SentenceT
 
 First run downloads a model (~80 MB). Output should read "Saved 35 embeddings".
 
-## Step 8: Start the server
+## Step 7: Start the server
 
 ```
 cd C:\HearPaulJennings
@@ -133,7 +112,7 @@ python -m uvicorn app.main:app --host 0.0.0.0 --port 8080
 
 Windows Firewall may prompt to allow Python network access. Click "Allow access".
 
-## Step 9: Open in browser
+## Step 8: Open in browser
 
 Open Chrome or Edge:
 

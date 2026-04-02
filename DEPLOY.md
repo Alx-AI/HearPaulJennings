@@ -9,40 +9,21 @@ Setup for a Linux machine with an NVIDIA GPU. No internet required after initial
 - ffmpeg installed (`apt install ffmpeg` or bundled)
 - NVIDIA drivers with CUDA 12+ (`nvidia-smi` to verify)
 
-## Step 1: Get the Code
+## Step 1: Get the Project
+
+Download the `HearPaulJennings` folder from Google Drive and place it on the machine. This guide assumes `/root/HearPaulJennings`.
+
+The folder includes the application code, video files, and layout images. Verify:
 
 ```bash
-cd /root
-git clone https://github.com/Alx-AI/HearPaulJennings.git
-cd HearPaulJennings
-```
-
-Or copy from USB/download and extract to `/root/HearPaulJennings`.
-
-## Step 2: Place Video Files
-
-Download the `OneDrive_1_2-27-2026` folder from Google Drive and place it inside the project:
-
-```
-HearPaulJennings/
-  OneDrive_1_2-27-2026/
-    Column B/       (36 .mp4 files)
-    Column C/       (36 .mp4 files)
-    Column D/       (36 .mp4 files)
-    Extra Videos/   (6 .mp4 files)
-    layout/         (left_pic.png, right_pic.png, fullmockup.png)
-```
-
-Verify counts:
-```bash
+cd /root/HearPaulJennings
 ls "OneDrive_1_2-27-2026/Column B/" | wc -l   # expect 36
 ls "OneDrive_1_2-27-2026/Column C/" | wc -l   # expect 36
 ls "OneDrive_1_2-27-2026/Column D/" | wc -l   # expect 36
 ls "OneDrive_1_2-27-2026/Extra Videos/" | wc -l # expect 6
-ls "OneDrive_1_2-27-2026/layout/" | wc -l      # expect 3
 ```
 
-## Step 3: Install Python Dependencies
+## Step 2: Install Python Dependencies
 
 ```bash
 cd /root/HearPaulJennings
@@ -52,7 +33,7 @@ pip install fastapi uvicorn python-multipart httpx sentence-transformers numpy p
 pip install nvidia-cublas-cu12
 ```
 
-## Step 4: Configure
+## Step 3: Configure
 
 ```bash
 cat > .env << 'EOF'
@@ -62,7 +43,7 @@ EOF
 
 This uses faster-whisper (GPU-accelerated, lightweight). Models download on first run (~250MB total).
 
-## Step 5: Generate Embeddings (if missing)
+## Step 4: Generate Embeddings (if missing)
 
 ```bash
 test -f data/embeddings.npy || python3 -c "
@@ -77,7 +58,7 @@ print(f'Saved {len(embeddings)} embeddings')
 "
 ```
 
-## Step 6: Verify Setup
+## Step 5: Verify Setup
 
 ```bash
 python3 << 'VERIFY'
@@ -118,7 +99,7 @@ VERIFY
 
 All lines should say `OK`.
 
-## Step 7: Start the Server
+## Step 6: Start the Server
 
 ```bash
 cd /root/HearPaulJennings
@@ -141,7 +122,7 @@ nohup python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8080 > /tmp/uvicorn.
 tail -f /tmp/uvicorn.log
 ```
 
-## Step 8: Open in Browser
+## Step 7: Open in Browser
 
 - **Local machine**: Open `http://localhost:8080`
 - **Remote (SSH tunnel)**: From your local machine run:
