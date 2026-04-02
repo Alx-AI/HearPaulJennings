@@ -34,24 +34,17 @@ You should see `Python 3.12.x`.
 
 ## Step 2: Install ffmpeg
 
-1. Go to https://www.gyan.dev/ffmpeg/builds/
-2. Under "release builds", download the `ffmpeg-release-essentials.zip` file
-3. Extract the zip somewhere permanent, like `C:\ffmpeg`
-4. Inside the extracted folder, find the `bin` subfolder (it contains `ffmpeg.exe`)
-5. Add that `bin` folder to your system PATH:
-   - Press Windows key, search "environment variables", click "Edit the system environment variables"
-   - Click "Environment Variables" button
-   - Under "System variables", find `Path`, select it, click "Edit"
-   - Click "New" and type the full path to the bin folder, e.g. `C:\ffmpeg\ffmpeg-7.1.1-essentials_build\bin`
-   - Click OK on all dialogs
+In the same Command Prompt:
 
-Open a **new** Command Prompt and verify:
+```
+winget install ffmpeg
+```
+
+Close and reopen Command Prompt, then verify:
 
 ```
 ffmpeg -version
 ```
-
-You should see version info. If it says "not recognized", the PATH wasn't set correctly.
 
 ## Step 3: Get the project files
 
@@ -192,7 +185,7 @@ To have the kiosk start automatically when the PC boots:
 |---------|-----|
 | `libcublas` or CUDA library errors | `pip install nvidia-cublas-cu12` and set PATH (see Step 8) |
 | `CUDA out of memory` | Close other programs using the GPU. Run `nvidia-smi` to see what's running. |
-| `ffmpeg is not recognized` | Reinstall ffmpeg and make sure the `bin` folder is in your system PATH (Step 2) |
+| `ffmpeg is not recognized` | `winget install ffmpeg` then reopen Command Prompt |
 | `python is not recognized` | Reinstall Python and check "Add to PATH" (Step 1). Open a new Command Prompt after installing. |
 | Videos don't play | Check folder structure matches Step 4 |
 | Mic not working | Browser needs permission. Click the lock icon in the address bar and allow microphone access. Must be on `localhost`, not an IP. |
